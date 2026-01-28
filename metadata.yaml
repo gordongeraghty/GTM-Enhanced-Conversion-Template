@@ -15,19 +15,26 @@
 homepage: "https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template"
 documentation: "https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template/blob/main/TEMPLATE_GUIDE.md"
 versions:
+  - sha: 606c25f9f82296e41b90fc31ebe0bd3d9c565b7e
+    changeNotes: |
+      v1.1.0 - Add 14 new platforms with test files
+      New Platforms:
+      - Marketing Automation: Mailchimp, ActiveCampaign, Klaviyo
+      - Booking: Calendly
+      - E-commerce: Square Online, Magento, BigCommerce
+      - Surveys: SurveyMonkey
+      - Donations: Donorbox
+      - Restaurant: Toast
+      - Forms: Typeform, JotForm, Webflow, Ninja Forms
+      Updates:
+      - Apache 2.0 license for GTM Gallery compliance
+      - Comprehensive test files for all platforms
+      - Automated test suite (test-all-platforms.html)
   - sha: f61e276a965b3d5ab8408599f9011fbf89f92c42
     changeNotes: |
       Initial release v1.0.0
       - Universal Enhanced Conversion Tracking for Google Ads
       - Auto-detection for 50+ platforms
-      - E-commerce: Shopify, WooCommerce, Magento, BigCommerce
-      - WordPress Forms: Contact Form 7, Gravity Forms, WPForms, Ninja Forms
-      - Standalone Forms: Typeform, JotForm, Formstack, Cognito Forms
-      - Marketing Automation: HubSpot, Mailchimp, Klaviyo, ActiveCampaign
-      - Booking: Calendly
-      - Surveys: SurveyMonkey
-      - Donations: Donorbox
-      - Restaurant: Toast
       - Email validation and phone normalization
       - Debug mode for troubleshooting
       - GTM Consent Mode support
