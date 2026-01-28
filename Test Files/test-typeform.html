@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Typeform Embed Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #262627;
+            margin-bottom: 10px;
+        }
+        .tf-badge {
+            background: #262627;
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .typeform-widget {
+            background: #f0f0f0;
+            border-radius: 8px;
+            padding: 30px;
+            min-height: 400px;
+        }
+        .tf-question {
+            margin-bottom: 30px;
+            display: none;
+        }
+        .tf-question.active {
+            display: block;
+        }
+        .tf-question h2 {
+            color: #262627;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .tf-question input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-bottom: 2px solid #262627;
+            background: transparent;
+            font-size: 18px;
+            outline: none;
+        }
+        .tf-question input:focus {
+            border-bottom-color: #3b3b4f;
+        }
+        .tf-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .tf-btn {
+            background: #262627;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .tf-btn:hover {
+            background: #3b3b4f;
+        }
+        .tf-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .tf-progress {
+            height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+            margin-bottom: 20px;
+        }
+        .tf-progress-bar {
+            height: 100%;
+            background: #262627;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+        .tf-complete {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        .tf-complete.show {
+            display: block;
+        }
+        .tf-complete h2 {
+            color: #262627;
+        }
+        .debug-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+        }
+        #dataLayerOutput {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Typeform Embed Test</h1>
+        <span class="tf-badge">Powered by Typeform</span>
+        <p>This simulates a Typeform embedded form for testing the Enhanced Conversion Tracking template.</p>
+
+        <div class="typeform-widget" data-tf-widget="abc123">
+            <div class="tf-progress">
+                <div class="tf-progress-bar" id="progressBar" style="width: 0%"></div>
+            </div>
+
+            <div class="tf-question active" id="q1">
+                <h2>What's your email address?</h2>
+                <input type="email" name="email" placeholder="name@example.com" required>
+            </div>
+
+            <div class="tf-question" id="q2">
+                <h2>What's your first name?</h2>
+                <input type="text" name="first_name" placeholder="Type your answer here...">
+            </div>
+
+            <div class="tf-question" id="q3">
+                <h2>And your last name?</h2>
+                <input type="text" name="last_name" placeholder="Type your answer here...">
+            </div>
+
+            <div class="tf-question" id="q4">
+                <h2>What's your phone number?</h2>
+                <input type="tel" name="phone" placeholder="+1 555 123 4567">
+            </div>
+
+            <div class="tf-nav" id="tfNav">
+                <button class="tf-btn" id="prevBtn" disabled>Previous</button>
+                <button class="tf-btn" id="nextBtn">Next</button>
+            </div>
+
+            <div class="tf-complete" id="tfComplete">
+                <h2>Thanks for completing this form!</h2>
+                <p>Your responses have been recorded.</p>
+            </div>
+        </div>
+
+        <div class="debug-panel">
+            <h3>Debug Panel</h3>
+            <p>DataLayer Events:</p>
+            <div id="dataLayerOutput">Waiting for form completion...</div>
+        </div>
+    </div>
+
+    <!-- Simulate Typeform global object -->
+    <script>
+        window.tf = {
+            createWidget: function() {
+                console.log('Typeform widget created');
+            }
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Watch dataLayer for changes
+        const originalPush = window.dataLayer.push;
+        window.dataLayer.push = function() {
+            originalPush.apply(this, arguments);
+            updateDebugPanel();
+        };
+
+        function updateDebugPanel() {
+            const output = document.getElementById('dataLayerOutput');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+        }
+    </script>
+
+    <!-- Typeform Navigation Handler -->
+    <script>
+        const questions = ['q1', 'q2', 'q3', 'q4'];
+        let currentQuestion = 0;
+
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+        const tfNav = document.getElementById('tfNav');
+        const tfComplete = document.getElementById('tfComplete');
+
+        function updateQuestion() {
+            questions.forEach((q, i) => {
+                document.getElementById(q).classList.toggle('active', i === currentQuestion);
+            });
+
+            prevBtn.disabled = currentQuestion === 0;
+            nextBtn.textContent = currentQuestion === questions.length - 1 ? 'Submit' : 'Next';
+
+            progressBar.style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+        }
+
+        prevBtn.addEventListener('click', function() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                updateQuestion();
+            }
+        });
+
+        nextBtn.addEventListener('click', function() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                updateQuestion();
+            } else {
+                // Submit
+                submitForm();
+            }
+        });
+
+        function submitForm() {
+            const formData = {
+                email: document.querySelector('[name="email"]').value,
+                firstName: document.querySelector('[name="first_name"]').value,
+                lastName: document.querySelector('[name="last_name"]').value,
+                phone: document.querySelector('[name="phone"]').value
+            };
+
+            console.log('Typeform Data:', formData);
+
+            // Hide questions and nav
+            questions.forEach(q => document.getElementById(q).style.display = 'none');
+            tfNav.style.display = 'none';
+
+            // Show completion
+            tfComplete.classList.add('show');
+
+            // Trigger Typeform submit event
+            const tfEvent = new CustomEvent('tf-submit', {
+                detail: {
+                    formId: 'abc123',
+                    responseId: 'resp-xyz-789',
+                    answers: formData
+                }
+            });
+            document.dispatchEvent(tfEvent);
+
+            // Also push to dataLayer
+            window.dataLayer.push({
+                event: 'typeform_submit',
+                typeform_id: 'abc123',
+                response_id: 'resp-xyz-789',
+                user_data: formData
+            });
+
+            console.log('Typeform submit event fired');
+        }
+    </script>
+</body>
+</html>

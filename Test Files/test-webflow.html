@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-wf-page="test-123" data-wf-site="site-456">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Webflow Form Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4353ff;
+            margin-bottom: 10px;
+        }
+        .wf-badge {
+            background: #4353ff;
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .w-form {
+            margin-top: 20px;
+        }
+        .w-form-done {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .w-form-done.show {
+            display: block;
+        }
+        .w-form-fail {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .field-label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        .w-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        .w-input:focus {
+            border-color: #4353ff;
+            outline: none;
+        }
+        .w-button {
+            background: #4353ff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        .w-button:hover {
+            background: #3644d9;
+        }
+        .debug-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+        }
+        #dataLayerOutput {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Webflow Form Test</h1>
+        <span class="wf-badge">Built on Webflow</span>
+        <p>This simulates a Webflow form for testing the Enhanced Conversion Tracking template.</p>
+
+        <div class="w-form">
+            <form id="contact-form" name="contact-form" data-name="Contact Form" method="post">
+                <label class="field-label" for="email">Email Address</label>
+                <input type="email" class="w-input" name="email" id="email" required placeholder="your@email.com" data-name="Email">
+
+                <label class="field-label" for="first-name">First Name</label>
+                <input type="text" class="w-input" name="first-name" id="first-name" placeholder="John" data-name="First Name">
+
+                <label class="field-label" for="last-name">Last Name</label>
+                <input type="text" class="w-input" name="last-name" id="last-name" placeholder="Doe" data-name="Last Name">
+
+                <label class="field-label" for="phone">Phone Number</label>
+                <input type="tel" class="w-input" name="phone" id="phone" placeholder="+1 555 123 4567" data-name="Phone">
+
+                <label class="field-label" for="message">Message</label>
+                <textarea class="w-input" name="message" id="message" placeholder="How can we help?" data-name="Message"></textarea>
+
+                <input type="submit" value="Send Message" class="w-button">
+            </form>
+
+            <div class="w-form-done" id="formDone">
+                <h3>Thank You!</h3>
+                <p>Your submission has been received.</p>
+            </div>
+
+            <div class="w-form-fail" id="formFail">
+                <p>Oops! Something went wrong while submitting the form.</p>
+            </div>
+        </div>
+
+        <div class="debug-panel">
+            <h3>Debug Panel</h3>
+            <p>DataLayer Events:</p>
+            <div id="dataLayerOutput">Waiting for form submission...</div>
+        </div>
+    </div>
+
+    <!-- Simulate Webflow (data-wf-page attribute in html tag is the main detection method) -->
+    <script>
+        // Webflow uses data attributes on the html element for detection
+        // data-wf-page and data-wf-site are already set in the HTML tag
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Watch dataLayer for changes
+        const originalPush = window.dataLayer.push;
+        window.dataLayer.push = function() {
+            originalPush.apply(this, arguments);
+            updateDebugPanel();
+        };
+
+        function updateDebugPanel() {
+            const output = document.getElementById('dataLayerOutput');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+        }
+    </script>
+
+    <!-- Test Form Handler -->
+    <script>
+        const form = document.getElementById('contact-form');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                email: form.querySelector('[name="email"]').value,
+                firstName: form.querySelector('[name="first-name"]').value,
+                lastName: form.querySelector('[name="last-name"]').value,
+                phone: form.querySelector('[name="phone"]').value,
+                message: form.querySelector('[name="message"]').value
+            };
+
+            console.log('Webflow Form Data:', formData);
+
+            // Simulate form submission
+            setTimeout(function() {
+                form.style.display = 'none';
+                document.getElementById('formDone').classList.add('show');
+
+                // Push form submission event
+                window.dataLayer.push({
+                    event: 'webflow_form_submit',
+                    form_name: 'Contact Form',
+                    user_data: {
+                        email: formData.email,
+                        firstName: formData.firstName,
+                        lastName: formData.lastName,
+                        phone: formData.phone
+                    }
+                });
+
+                console.log('Webflow form submit event fired');
+            }, 800);
+        });
+    </script>
+</body>
+</html>

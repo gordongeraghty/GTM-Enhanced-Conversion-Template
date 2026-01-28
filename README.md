@@ -18,15 +18,21 @@ This template detects what platform you're using and configures itself. One temp
 
 ## Supported platforms
 
-**E-commerce:** Shopify, WooCommerce, Magento, BigCommerce, Squarespace Commerce, Wix, PrestaShop, OpenCart, and others
+**E-commerce:** Shopify, WooCommerce, Magento, BigCommerce, Squarespace Commerce, Wix, Square Online, PrestaShop, OpenCart, and others
 
 **WordPress forms:** Contact Form 7, Gravity Forms, WPForms, Ninja Forms, Elementor Forms, Fluent Forms, Formidable Forms, Forminator
 
 **Standalone forms:** Typeform, JotForm, Google Forms, Formstack, Wufoo, Cognito Forms
 
-**Marketing automation:** HubSpot, Marketo, Pardot, ActiveCampaign, Mailchimp
+**Marketing automation:** HubSpot, Mailchimp, Klaviyo, ActiveCampaign, Marketo, Pardot
 
 **Events and bookings:** Eventbrite, Humanitix, Calendly, Acuity Scheduling
+
+**Surveys:** SurveyMonkey
+
+**Donations:** Donorbox
+
+**Restaurant ordering:** Toast
 
 **Learning platforms:** Teachable, Thinkific, Kajabi, LearnDash
 

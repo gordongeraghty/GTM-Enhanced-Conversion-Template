@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Calendly Embed Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .page-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .calendly-inline-widget {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .calendly-inline-widget h2 {
+            color: #006BFF;
+            margin-bottom: 20px;
+        }
+        .calendly-inline-widget p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .time-slot {
+            background: #006BFF;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .time-slot:hover {
+            background: #0056cc;
+        }
+        .booking-form {
+            display: none;
+            text-align: left;
+            width: 100%;
+            max-width: 400px;
+        }
+        .booking-form.show {
+            display: block;
+        }
+        .booking-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .booking-form input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        .booking-form button {
+            background: #006BFF;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        .booking-success {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .booking-success.show {
+            display: block;
+        }
+        .debug-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+        }
+        #dataLayerOutput {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1>Calendly Booking Test</h1>
+        <p>This simulates a Calendly embedded widget for testing the Enhanced Conversion Tracking template.</p>
+
+        <div class="calendly-inline-widget" data-url="https://calendly.com/test-user/30min">
+            <h2>Schedule a Meeting</h2>
+            <p>Select a time slot to book your 30-minute consultation</p>
+
+            <div class="time-slots" id="timeSlots">
+                <button class="time-slot" data-time="9:00 AM">9:00 AM</button>
+                <button class="time-slot" data-time="10:00 AM">10:00 AM</button>
+                <button class="time-slot" data-time="11:00 AM">11:00 AM</button>
+                <button class="time-slot" data-time="1:00 PM">1:00 PM</button>
+                <button class="time-slot" data-time="2:00 PM">2:00 PM</button>
+                <button class="time-slot" data-time="3:00 PM">3:00 PM</button>
+            </div>
+
+            <div class="booking-form" id="bookingForm">
+                <p><strong>Selected time: <span id="selectedTime"></span></strong></p>
+                <label>Your Name (required)
+                    <input type="text" name="name" required placeholder="John Doe">
+                </label>
+                <label>Email Address (required)
+                    <input type="email" name="email" required placeholder="your@email.com">
+                </label>
+                <button type="button" id="confirmBooking">Confirm Booking</button>
+            </div>
+
+            <div class="booking-success" id="bookingSuccess">
+                <h3>Booking Confirmed!</h3>
+                <p>You will receive a confirmation email shortly.</p>
+            </div>
+        </div>
+
+        <div class="debug-panel">
+            <h3>Debug Panel</h3>
+            <p>DataLayer Events:</p>
+            <div id="dataLayerOutput">Waiting for booking...</div>
+        </div>
+    </div>
+
+    <!-- Simulate Calendly global object -->
+    <script>
+        window.Calendly = {
+            initInlineWidget: function(options) {
+                console.log('Calendly widget initialized:', options);
+            },
+            initPopupWidget: function(options) {
+                console.log('Calendly popup initialized:', options);
+            }
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Watch dataLayer for changes
+        const originalPush = window.dataLayer.push;
+        window.dataLayer.push = function() {
+            originalPush.apply(this, arguments);
+            updateDebugPanel();
+        };
+
+        function updateDebugPanel() {
+            const output = document.getElementById('dataLayerOutput');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+        }
+    </script>
+
+    <!-- Test Booking Handler -->
+    <script>
+        const timeSlots = document.querySelectorAll('.time-slot');
+        const bookingForm = document.getElementById('bookingForm');
+        const selectedTimeSpan = document.getElementById('selectedTime');
+        const confirmButton = document.getElementById('confirmBooking');
+        const timeSlotsContainer = document.getElementById('timeSlots');
+        const bookingSuccess = document.getElementById('bookingSuccess');
+
+        let selectedTime = null;
+
+        timeSlots.forEach(function(slot) {
+            slot.addEventListener('click', function() {
+                selectedTime = this.dataset.time;
+                selectedTimeSpan.textContent = selectedTime;
+                timeSlotsContainer.style.display = 'none';
+                bookingForm.classList.add('show');
+            });
+        });
+
+        confirmButton.addEventListener('click', function() {
+            const name = bookingForm.querySelector('[name="name"]').value;
+            const email = bookingForm.querySelector('[name="email"]').value;
+
+            if (!name || !email) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const nameParts = name.split(' ');
+            const firstName = nameParts[0];
+            const lastName = nameParts.slice(1).join(' ');
+
+            console.log('Calendly Booking Data:', {
+                name: name,
+                email: email,
+                time: selectedTime
+            });
+
+            // Simulate Calendly event scheduling
+            setTimeout(function() {
+                bookingForm.classList.remove('show');
+                bookingSuccess.classList.add('show');
+
+                // Trigger Calendly scheduled event (this is how Calendly actually fires events)
+                const calendlyEvent = new MessageEvent('message', {
+                    data: {
+                        event: 'calendly.event_scheduled',
+                        payload: {
+                            event: {
+                                uri: 'https://api.calendly.com/scheduled_events/ABCD1234'
+                            },
+                            invitee: {
+                                email: email,
+                                name: name,
+                                uri: 'https://api.calendly.com/scheduled_events/ABCD1234/invitees/EFGH5678'
+                            }
+                        }
+                    }
+                });
+                window.dispatchEvent(calendlyEvent);
+
+                // Also fire as a custom event for easier testing
+                const customEvent = new CustomEvent('calendly.event_scheduled', {
+                    detail: {
+                        payload: {
+                            invitee: {
+                                email: email,
+                                name: name
+                            }
+                        }
+                    }
+                });
+                document.dispatchEvent(customEvent);
+
+                console.log('Calendly event_scheduled fired');
+            }, 800);
+        });
+    </script>
+</body>
+</html>

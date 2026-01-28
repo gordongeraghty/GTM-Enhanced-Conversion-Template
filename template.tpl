@@ -11,7 +11,7 @@ ___INFO___
 {
   "type": "TAG",
   "id": "cvt_temp_public_id",
-  "version": 1,
+  "version": 2,
   "securityGroups": [],
   "displayName": "Enhanced Conversion Tracking - Universal",
   "brand": {
@@ -19,7 +19,7 @@ ___INFO___
     "displayName": "Enhanced Conversion Tracking",
     "thumbnail": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
   },
-  "description": "Universal Enhanced Conversion Tracking for Google Ads across 50+ platforms including e-commerce (Shopify, WooCommerce, Magento), forms (Contact Form 7, Gravity Forms, Typeform), marketing automation (HubSpot, Marketo), and more. Auto-detects platforms and captures user data for enhanced conversions.",
+  "description": "Universal Enhanced Conversion Tracking for Google Ads across 50+ platforms including e-commerce (Shopify, WooCommerce, Square), forms (Contact Form 7, Gravity Forms, Typeform), marketing automation (HubSpot, Mailchimp, Klaviyo, ActiveCampaign), booking (Calendly), surveys (SurveyMonkey), donations (Donorbox), and restaurants (Toast). Auto-detects platforms and captures user data for enhanced conversions.",
   "categories": ["CONVERSIONS", "ANALYTICS", "ADVERTISING"],
   "containerContexts": [
     "WEB"
@@ -94,6 +94,10 @@ ___TEMPLATE_PARAMETERS___
       {
         "value": "donations",
         "displayValue": "Donation & Fundraising Platforms"
+      },
+      {
+        "value": "restaurant",
+        "displayValue": "Restaurant & Food Ordering"
       },
       {
         "value": "generic",
@@ -1008,6 +1012,50 @@ const mainScript = function() {
           return 'thinkific';
         }
 
+        // Marketing automation (additional)
+        if (this.detectMailchimp()) {
+          debug('Detected platform: mailchimp');
+          return 'mailchimp';
+        }
+        if (this.detectActiveCampaign()) {
+          debug('Detected platform: activecampaign');
+          return 'activecampaign';
+        }
+        if (this.detectKlaviyo()) {
+          debug('Detected platform: klaviyo');
+          return 'klaviyo';
+        }
+
+        // Booking platforms
+        if (this.detectCalendly()) {
+          debug('Detected platform: calendly');
+          return 'calendly';
+        }
+
+        // E-commerce (additional)
+        if (this.detectSquareOnline()) {
+          debug('Detected platform: squareOnline');
+          return 'squareOnline';
+        }
+
+        // Survey platforms
+        if (this.detectSurveyMonkey()) {
+          debug('Detected platform: surveymonkey');
+          return 'surveymonkey';
+        }
+
+        // Donation platforms
+        if (this.detectDonorbox()) {
+          debug('Detected platform: donorbox');
+          return 'donorbox';
+        }
+
+        // Restaurant platforms
+        if (this.detectToast()) {
+          debug('Detected platform: toast');
+          return 'toast';
+        }
+
         // Google Forms (last, as it's rare)
         if (this.detectGoogleForms()) {
           debug('Detected platform: googleForms');
@@ -1128,6 +1176,63 @@ const mainScript = function() {
       detectThinkific: function() {
         return window.location.hostname.includes('thinkific.com') ||
                !!window.Thinkific;
+      },
+
+      // Marketing automation platforms
+      detectMailchimp: function() {
+        return !!(window.mc4wp ||
+                 window.MailchimpSubscribe ||
+                 document.querySelector('.mc4wp-form') ||
+                 document.querySelector('[data-mailchimp-form]'));
+      },
+
+      detectActiveCampaign: function() {
+        return !!(window._ac ||
+                 document.querySelector('._form') ||
+                 document.querySelector('[data-ac-form]') ||
+                 document.querySelector('script[src*="activehosted.com"]'));
+      },
+
+      detectKlaviyo: function() {
+        return !!(window.klaviyo ||
+                 window._klOnsite ||
+                 document.querySelector('.klaviyo-form') ||
+                 document.querySelector('[data-klaviyo-form]'));
+      },
+
+      // Booking platforms
+      detectCalendly: function() {
+        return !!(window.Calendly ||
+                 document.querySelector('.calendly-inline-widget') ||
+                 document.querySelector('[data-url*="calendly.com"]'));
+      },
+
+      // E-commerce platforms
+      detectSquareOnline: function() {
+        return !!(window.Square ||
+                 document.querySelector('[data-square-checkout]') ||
+                 window.location.hostname.includes('square.site'));
+      },
+
+      // Survey platforms
+      detectSurveyMonkey: function() {
+        return !!(window.SM ||
+                 window.location.hostname.includes('surveymonkey.com') ||
+                 document.querySelector('[data-surveymonkey]'));
+      },
+
+      // Donation platforms
+      detectDonorbox: function() {
+        return !!(window.Donorbox ||
+                 document.querySelector('iframe[src*="donorbox.org"]') ||
+                 document.querySelector('.donorbox-form'));
+      },
+
+      // Restaurant platforms
+      detectToast: function() {
+        return !!(window.Toast ||
+                 window.location.hostname.includes('toasttab.com') ||
+                 document.querySelector('.toast-online-ordering'));
       }
     };
 
@@ -1309,6 +1414,103 @@ const mainScript = function() {
         conversionType: 'purchase',
         dataSource: 'datalayer',
         eventName: 'orderComplete'
+      },
+
+      // Marketing automation platforms
+      mailchimp: {
+        conversionType: 'lead',
+        triggerMethod: 'success_element',
+        successSelector: '.mc4wp-success, .mc4wp-response .mc4wp-alert--success',
+        formSelector: '.mc4wp-form'
+      },
+
+      activecampaign: {
+        conversionType: 'lead',
+        triggerMethod: 'success_element',
+        successSelector: '._form-thank-you, ._form-content[style*="display: none"] + ._form-thank-you',
+        formSelector: '._form'
+      },
+
+      klaviyo: {
+        conversionType: 'lead',
+        triggerMethod: 'custom_event',
+        eventName: 'klaviyoFormSubmitted',
+        formSelector: '.klaviyo-form',
+        // Also watch for success element
+        successSelector: '.klaviyo-form-success'
+      },
+
+      // Booking platforms
+      calendly: {
+        conversionType: 'lead',
+        triggerMethod: 'custom_event',
+        eventName: 'calendly.event_scheduled',
+        useCalendlyAPI: true,
+        // Calendly fires events on window.addEventListener
+        getDataFromEvent: function(event) {
+          if (event && event.data && event.data.payload) {
+            return {
+              email: event.data.payload.invitee.email,
+              firstName: event.data.payload.invitee.name ? event.data.payload.invitee.name.split(' ')[0] : null,
+              lastName: event.data.payload.invitee.name ? event.data.payload.invitee.name.split(' ').slice(1).join(' ') : null
+            };
+          }
+          return null;
+        }
+      },
+
+      // E-commerce platforms
+      squareOnline: {
+        conversionType: 'purchase',
+        triggerMethod: 'url_change',
+        successUrlPattern: '/order-confirmation',
+        selectors: {
+          email: 'input[name="email"], [data-testid="checkout-email"]',
+          phone: 'input[name="phone"], [data-testid="checkout-phone"]',
+          firstName: 'input[name="firstName"], [data-testid="checkout-first-name"]',
+          lastName: 'input[name="lastName"], [data-testid="checkout-last-name"]'
+        }
+      },
+
+      // Survey platforms
+      surveymonkey: {
+        conversionType: 'lead',
+        triggerMethod: 'url_change',
+        successUrlPattern: '/r/',
+        // SurveyMonkey redirects to thank you page
+        getDataFromUrl: function() {
+          // Survey data is typically not accessible client-side
+          // This captures the completion event
+          return null;
+        }
+      },
+
+      // Donation platforms
+      donorbox: {
+        conversionType: 'purchase',
+        triggerMethod: 'custom_event',
+        eventName: 'donorbox_donation_complete',
+        // Donorbox uses postMessage from iframe
+        usePostMessage: true,
+        selectors: {
+          email: 'input[name="email"], .donorbox-email',
+          firstName: 'input[name="first_name"], .donorbox-first-name',
+          lastName: 'input[name="last_name"], .donorbox-last-name',
+          phone: 'input[name="phone"], .donorbox-phone'
+        }
+      },
+
+      // Restaurant platforms
+      toast: {
+        conversionType: 'purchase',
+        triggerMethod: 'url_change',
+        successUrlPattern: '/order-confirmation',
+        selectors: {
+          email: 'input[name="email"], #email, .toast-checkout-email',
+          phone: 'input[name="phone"], #phone, .toast-checkout-phone',
+          firstName: 'input[name="firstName"], .toast-checkout-first-name',
+          lastName: 'input[name="lastName"], .toast-checkout-last-name'
+        }
       },
 
       generic: {

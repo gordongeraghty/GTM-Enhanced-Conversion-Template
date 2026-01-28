@@ -60,6 +60,197 @@ Simulates a Gravity Forms (WordPress plugin) form structure.
 
 ---
 
+### 4. test-mailchimp.html
+Simulates a Mailchimp for WordPress (MC4WP) form.
+
+**Purpose:** Test Mailchimp platform detection
+**Features:**
+- MC4WP form classes
+- Mailchimp global objects (`window.mc4wp`, `window.MailchimpSubscribe`)
+- Success message elements
+- Standard Mailchimp field names (EMAIL, FNAME, LNAME, PHONE)
+
+---
+
+### 5. test-activecampaign.html
+Simulates an ActiveCampaign embedded form.
+
+**Purpose:** Test ActiveCampaign platform detection
+**Features:**
+- ActiveCampaign form classes (`._form`)
+- AC global object (`window._ac`)
+- Thank you message display
+- AC field naming conventions
+
+---
+
+### 6. test-klaviyo.html
+Simulates a Klaviyo embedded form.
+
+**Purpose:** Test Klaviyo platform detection
+**Features:**
+- Klaviyo form classes
+- Klaviyo global objects (`window.klaviyo`, `window._klOnsite`)
+- Custom form submission event
+- Klaviyo field naming ($email, $first_name, etc.)
+
+---
+
+### 7. test-calendly.html
+Simulates a Calendly booking widget.
+
+**Purpose:** Test Calendly platform detection
+**Features:**
+- Calendly inline widget element
+- Calendly global object (`window.Calendly`)
+- PostMessage event simulation for booking
+- Interactive time slot selection
+
+---
+
+### 8. test-square-online.html
+Simulates a Square Online checkout.
+
+**Purpose:** Test Square Online platform detection
+**Features:**
+- Square checkout attributes
+- Square global object (`window.Square`)
+- Order confirmation flow
+- E-commerce purchase event
+
+---
+
+### 9. test-surveymonkey.html
+Simulates a SurveyMonkey survey form.
+
+**Purpose:** Test SurveyMonkey platform detection
+**Features:**
+- SurveyMonkey global object (`window.SM`)
+- Survey completion flow
+- Standard survey fields with validation
+
+---
+
+### 10. test-donorbox.html
+Simulates a Donorbox donation form.
+
+**Purpose:** Test Donorbox platform detection
+**Features:**
+- Donorbox global object (`window.Donorbox`)
+- Donation amount selection
+- Custom donation completion event
+- Donor field collection
+
+---
+
+### 11. test-toast.html
+Simulates a Toast online ordering checkout.
+
+**Purpose:** Test Toast platform detection
+**Features:**
+- Toast global object (`window.Toast`)
+- Restaurant ordering flow
+- Order confirmation page simulation
+- Customer information collection
+
+---
+
+### 12. test-magento.html
+Simulates a Magento checkout page.
+
+**Purpose:** Test Magento platform detection
+**Features:**
+- Magento global object (`window.Magento`)
+- Magento checkout form structure with `data-mage-init` attribute
+- RequireJS context simulation
+- Magento field naming (`firstname`, `lastname`, `telephone`, `postcode`)
+- Purchase event simulation
+
+---
+
+### 13. test-bigcommerce.html
+Simulates a BigCommerce checkout page.
+
+**Purpose:** Test BigCommerce platform detection
+**Features:**
+- BigCommerce global object (`window.BCData`)
+- `data-bigcommerce` attribute on checkout form
+- Cart and store hash simulation
+- Customer information collection
+- Purchase event simulation
+
+---
+
+### 14. test-typeform.html
+Simulates a Typeform embedded form.
+
+**Purpose:** Test Typeform platform detection
+**Features:**
+- Typeform global object (`window.tf`)
+- Multi-step form with progress bar
+- Typeform-specific CSS classes
+- Form completion event simulation
+- Interactive question flow
+
+---
+
+### 15. test-jotform.html
+Simulates a JotForm embedded form.
+
+**Purpose:** Test JotForm platform detection
+**Features:**
+- JotForm global object (`window.JotForm`)
+- JotForm form structure with `.jotform-form` class
+- JotForm field naming conventions
+- Thank you page simulation
+- Form submission event
+
+---
+
+### 16. test-webflow.html
+Simulates a Webflow form.
+
+**Purpose:** Test Webflow platform detection
+**Features:**
+- Webflow `data-wf-page` and `data-wf-site` attributes
+- Webflow form classes (`.w-form`, `.w-input`, `.w-button`)
+- Success/fail message elements
+- Standard contact form fields
+
+---
+
+### 17. test-ninja-forms.html
+Simulates a Ninja Forms (WordPress) form.
+
+**Purpose:** Test Ninja Forms platform detection
+**Features:**
+- Ninja Forms global object (`window.nfFrontEnd`)
+- nfRadio backbone model simulation
+- Ninja Forms CSS classes (`.nf-form-cont`, `.nf-field-container`)
+- Custom form submission event (`nfFormSubmitResponse`)
+- Ninja Forms field structure
+
+---
+
+### 18. test-all-platforms.html
+Comprehensive test suite for all platform detections.
+
+**Purpose:** Automated testing of all platform detection methods
+**Features:**
+- Tests all 14 new platforms (8 marketing/booking + 6 existing platforms)
+- Tests existing platform detection
+- Pass/fail reporting
+- Detailed logging
+- Both window object and DOM detection testing
+
+**To Test:**
+1. Open file in browser
+2. Click "Run All Tests" or "Test New Platforms Only"
+3. Review pass/fail results
+4. Check log for detailed output
+
+---
+
 ## How to Use Test Files
 
 ### Setup

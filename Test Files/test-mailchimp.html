@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Mailchimp Form Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .mc4wp-form p {
+            margin-bottom: 15px;
+        }
+        .mc4wp-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .mc4wp-form input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .mc4wp-form button {
+            background: #FFE01B;
+            color: #000;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .mc4wp-form button:hover {
+            background: #e6ca18;
+        }
+        .mc4wp-success, .mc4wp-alert--success {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        .mc4wp-success.show, .mc4wp-alert--success.show {
+            display: block;
+        }
+        .debug-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+        }
+        #dataLayerOutput {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Mailchimp Form Test</h1>
+        <p>This simulates a Mailchimp for WordPress (MC4WP) form for testing the Enhanced Conversion Tracking template.</p>
+
+        <form class="mc4wp-form" id="mc4wp-form-1" data-mailchimp-form>
+            <p>
+                <label>Email Address (required)
+                    <input type="email" name="EMAIL" required placeholder="your@email.com">
+                </label>
+            </p>
+
+            <p>
+                <label>First Name
+                    <input type="text" name="FNAME" placeholder="John">
+                </label>
+            </p>
+
+            <p>
+                <label>Last Name
+                    <input type="text" name="LNAME" placeholder="Doe">
+                </label>
+            </p>
+
+            <p>
+                <label>Phone Number
+                    <input type="tel" name="PHONE" placeholder="+1 555 123 4567">
+                </label>
+            </p>
+
+            <p>
+                <button type="submit">Subscribe</button>
+            </p>
+        </form>
+
+        <div class="mc4wp-response">
+            <div class="mc4wp-alert mc4wp-alert--success" role="alert">
+                Thank you! You have been subscribed successfully.
+            </div>
+        </div>
+
+        <div class="mc4wp-success" role="alert">
+            Thank you for subscribing!
+        </div>
+
+        <div class="debug-panel">
+            <h3>Debug Panel</h3>
+            <p>DataLayer Events:</p>
+            <div id="dataLayerOutput">Waiting for form submission...</div>
+        </div>
+    </div>
+
+    <!-- Simulate Mailchimp global object -->
+    <script>
+        window.mc4wp = {
+            forms: {
+                on: function(event, callback) {
+                    console.log('MC4WP event listener registered:', event);
+                }
+            }
+        };
+
+        window.MailchimpSubscribe = {
+            version: '4.8'
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Watch dataLayer for changes
+        const originalPush = window.dataLayer.push;
+        window.dataLayer.push = function() {
+            originalPush.apply(this, arguments);
+            updateDebugPanel();
+        };
+
+        function updateDebugPanel() {
+            const output = document.getElementById('dataLayerOutput');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+        }
+    </script>
+
+    <!-- Test Form Handler -->
+    <script>
+        const form = document.querySelector('.mc4wp-form');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                email: form.querySelector('[name="EMAIL"]').value,
+                firstName: form.querySelector('[name="FNAME"]').value,
+                lastName: form.querySelector('[name="LNAME"]').value,
+                phone: form.querySelector('[name="PHONE"]').value
+            };
+
+            console.log('Mailchimp Form Data:', formData);
+
+            // Simulate submission delay
+            setTimeout(function() {
+                // Show success messages
+                document.querySelector('.mc4wp-alert--success').classList.add('show');
+                document.querySelector('.mc4wp-success').classList.add('show');
+
+                // Trigger MC4WP success event
+                const event = new CustomEvent('mc4wp_form_success', {
+                    detail: {
+                        formId: 1,
+                        data: formData
+                    }
+                });
+                document.dispatchEvent(event);
+
+                console.log('Mailchimp form success event fired');
+            }, 800);
+        });
+    </script>
+</body>
+</html>

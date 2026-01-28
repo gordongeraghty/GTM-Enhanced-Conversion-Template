@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Donorbox Donation Form Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .donation-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .donorbox-badge {
+            background: #27ae60;
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .donorbox-form {
+            margin-top: 20px;
+        }
+        .amount-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .amount-btn {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .amount-btn:hover, .amount-btn.selected {
+            border-color: #27ae60;
+            background: #e8f5e9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .donorbox-form button[type="submit"] {
+            background: #27ae60;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            font-weight: bold;
+        }
+        .donorbox-form button[type="submit"]:hover {
+            background: #219a52;
+        }
+        .donation-success {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .donation-success.show {
+            display: block;
+        }
+        .donation-success h3 {
+            color: #27ae60;
+        }
+        .debug-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+        }
+        #dataLayerOutput {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="donation-container">
+        <h1>Support Our Cause</h1>
+        <span class="donorbox-badge">Powered by Donorbox</span>
+        <p>This simulates a Donorbox donation form for testing the Enhanced Conversion Tracking template.</p>
+
+        <form class="donorbox-form" data-donorbox-id="12345">
+            <p><strong>Select donation amount:</strong></p>
+            <div class="amount-options">
+                <button type="button" class="amount-btn" data-amount="25">$25</button>
+                <button type="button" class="amount-btn" data-amount="50">$50</button>
+                <button type="button" class="amount-btn selected" data-amount="100">$100</button>
+                <button type="button" class="amount-btn" data-amount="250">$250</button>
+                <button type="button" class="amount-btn" data-amount="500">$500</button>
+                <button type="button" class="amount-btn" data-amount="other">Other</button>
+            </div>
+
+            <input type="hidden" name="amount" value="100">
+
+            <div class="form-group">
+                <label>Email Address (required)
+                    <input type="email" name="email" required placeholder="your@email.com" class="donorbox-email">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>First Name
+                    <input type="text" name="first_name" placeholder="John" class="donorbox-first-name">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Last Name
+                    <input type="text" name="last_name" placeholder="Doe" class="donorbox-last-name">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number (optional)
+                    <input type="tel" name="phone" placeholder="+1 555 123 4567" class="donorbox-phone">
+                </label>
+            </div>
+
+            <button type="submit">Donate Now</button>
+        </form>
+
+        <div class="donation-success" id="donationSuccess">
+            <h3>Thank You for Your Donation!</h3>
+            <p>Your generous donation of <span id="donationAmount">$100</span> has been received.</p>
+            <p>A receipt has been sent to your email.</p>
+            <p>Transaction ID: DB-987654</p>
+        </div>
+
+        <div class="debug-panel">
+            <h3>Debug Panel</h3>
+            <p>DataLayer Events:</p>
+            <div id="dataLayerOutput">Waiting for donation...</div>
+        </div>
+    </div>
+
+    <!-- Simulate Donorbox global object -->
+    <script>
+        window.Donorbox = {
+            version: '2.0',
+            initialized: true,
+            campaignId: '12345'
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Watch dataLayer for changes
+        const originalPush = window.dataLayer.push;
+        window.dataLayer.push = function() {
+            originalPush.apply(this, arguments);
+            updateDebugPanel();
+        };
+
+        function updateDebugPanel() {
+            const output = document.getElementById('dataLayerOutput');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+        }
+    </script>
+
+    <!-- Test Donation Handler -->
+    <script>
+        const form = document.querySelector('.donorbox-form');
+        const amountBtns = document.querySelectorAll('.amount-btn');
+        const amountInput = form.querySelector('[name="amount"]');
+
+        amountBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                amountBtns.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                if (this.dataset.amount !== 'other') {
+                    amountInput.value = this.dataset.amount;
+                }
+            });
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const amount = amountInput.value;
+            const formData = {
+                email: form.querySelector('[name="email"]').value,
+                firstName: form.querySelector('[name="first_name"]').value,
+                lastName: form.querySelector('[name="last_name"]').value,
+                phone: form.querySelector('[name="phone"]').value,
+                amount: amount
+            };
+
+            console.log('Donorbox Donation Data:', formData);
+
+            // Simulate donation processing
+            setTimeout(function() {
+                // Hide form
+                form.style.display = 'none';
+
+                // Update and show success
+                document.getElementById('donationAmount').textContent = '$' + amount;
+                document.getElementById('donationSuccess').classList.add('show');
+
+                // Trigger Donorbox donation complete event (via postMessage simulation)
+                const donorboxEvent = new CustomEvent('donorbox_donation_complete', {
+                    detail: {
+                        amount: amount,
+                        currency: 'USD',
+                        transactionId: 'DB-987654',
+                        donor: {
+                            email: formData.email,
+                            firstName: formData.firstName,
+                            lastName: formData.lastName,
+                            phone: formData.phone
+                        }
+                    }
+                });
+                document.dispatchEvent(donorboxEvent);
+
+                // Also push to dataLayer
+                window.dataLayer.push({
+                    event: 'donation_complete',
+                    transaction_id: 'DB-987654',
+                    value: parseFloat(amount),
+                    currency: 'USD',
+                    donor: {
+                        email: formData.email,
+                        first_name: formData.firstName,
+                        last_name: formData.lastName,
+                        phone: formData.phone
+                    }
+                });
+
+                console.log('Donorbox donation complete event fired');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

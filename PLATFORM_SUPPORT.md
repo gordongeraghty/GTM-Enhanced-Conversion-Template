@@ -14,6 +14,7 @@ This document provides detailed information about each supported platform, inclu
 - [Booking & Appointments](#booking--appointments)
 - [Survey & Quiz](#survey--quiz)
 - [Donations & Fundraising](#donations--fundraising)
+- [Restaurant & Food Ordering](#restaurant--food-ordering)
 
 ---
 
@@ -111,6 +112,25 @@ This document provides detailed information about each supported platform, inclu
 | **Fields Available** | Email, Phone |
 | **Special Notes** | Wix has built-in tracking; may need custom integration |
 | **Tested** | ⚠️ Needs testing |
+
+---
+
+### Square Online
+
+| Property | Value |
+|----------|-------|
+| **Auto-Detection** | ✅ Yes |
+| **Detection Method** | `window.Square`, `[data-square-checkout]`, `square.site` domain |
+| **Conversion Type** | Purchase |
+| **Trigger Method** | URL Change |
+| **Success URL** | `/order-confirmation` |
+| **Fields Available** | Email, Phone, First Name, Last Name |
+| **Special Notes** | Works on Square Online storefronts |
+| **Tested** | ⚠️ Needs testing |
+
+**Configuration:**
+- Detection Mode: Auto-Detect
+- Trigger: Page View on URL contains "order-confirmation"
 
 ---
 
@@ -307,6 +327,67 @@ This document provides detailed information about each supported platform, inclu
 
 ---
 
+### Mailchimp
+
+| Property | Value |
+|----------|-------|
+| **Auto-Detection** | ✅ Yes |
+| **Detection Method** | `window.mc4wp`, `window.MailchimpSubscribe`, `.mc4wp-form` |
+| **Conversion Type** | Lead |
+| **Trigger Method** | Success Element |
+| **Form Selector** | `.mc4wp-form` |
+| **Success Selector** | `.mc4wp-success`, `.mc4wp-alert--success` |
+| **Fields Available** | Email, Phone, First Name, Last Name |
+| **Special Notes** | Works with MC4WP (Mailchimp for WordPress) plugin |
+| **Tested** | ⚠️ Needs testing |
+
+**Configuration:**
+- Detection Mode: Auto-Detect
+- Automatically detects success message appearance
+
+---
+
+### ActiveCampaign
+
+| Property | Value |
+|----------|-------|
+| **Auto-Detection** | ✅ Yes |
+| **Detection Method** | `window._ac`, `._form`, `[data-ac-form]` |
+| **Conversion Type** | Lead |
+| **Trigger Method** | Success Element |
+| **Form Selector** | `._form` |
+| **Success Selector** | `._form-thank-you` |
+| **Fields Available** | Email, Phone, First Name, Last Name |
+| **Special Notes** | Works with ActiveCampaign embedded forms |
+| **Tested** | ⚠️ Needs testing |
+
+**Configuration:**
+- Detection Mode: Auto-Detect
+- Form hides and thank you message appears on success
+
+---
+
+### Klaviyo
+
+| Property | Value |
+|----------|-------|
+| **Auto-Detection** | ✅ Yes |
+| **Detection Method** | `window.klaviyo`, `window._klOnsite`, `.klaviyo-form` |
+| **Conversion Type** | Lead |
+| **Trigger Method** | Custom Event |
+| **Event Name** | `klaviyoFormSubmitted` |
+| **Form Selector** | `.klaviyo-form` |
+| **Success Selector** | `.klaviyo-form-success` |
+| **Fields Available** | Email, Phone, First Name, Last Name |
+| **Special Notes** | Popular for e-commerce email marketing |
+| **Tested** | ⚠️ Needs testing |
+
+**Configuration:**
+- Detection Mode: Auto-Detect
+- Listens for Klaviyo form submission events
+
+---
+
 ## Event & Ticketing
 
 ### Humanitix
@@ -387,6 +468,91 @@ This document provides detailed information about each supported platform, inclu
 | **Trigger Method** | Form Submit |
 | **Form Selector** | `[data-drupal-selector*="form"]` |
 | **Tested** | ⚠️ Needs testing |
+
+---
+
+## Booking & Appointments
+
+### Calendly
+
+| Property | Value |
+|----------|-------|
+| **Auto-Detection** | ✅ Yes |
+| **Detection Method** | `window.Calendly`, `.calendly-inline-widget`, `[data-url*="calendly.com"]` |
+| **Conversion Type** | Lead |
+| **Trigger Method** | Custom Event |
+| **Event Name** | `calendly.event_scheduled` |
+| **Fields Available** | Email, Name (parsed to First/Last) |
+| **Special Notes** | Listens for Calendly's postMessage events |
+| **Tested** | ⚠️ Needs testing |
+
+**Configuration:**
+- Detection Mode: Auto-Detect
+- Calendly fires events via window.postMessage when a meeting is scheduled
+- Name is automatically split into first and last name
+
+---
+
+## Survey & Quiz
+
+### SurveyMonkey
+
+| Property | Value |
+|----------|-------|
+| **Auto-Detection** | ✅ Yes |
+| **Detection Method** | `window.SM`, `surveymonkey.com` domain, `[data-surveymonkey]` |
+| **Conversion Type** | Lead |
+| **Trigger Method** | URL Change |
+| **Success URL** | `/r/` (completion page) |
+| **Fields Available** | Email, Phone, First Name, Last Name (if captured in survey) |
+| **Special Notes** | Captures survey completion; field data depends on survey questions |
+| **Tested** | ⚠️ Needs testing |
+
+**Configuration:**
+- Detection Mode: Auto-Detect
+- Fires on survey completion page
+
+---
+
+## Donations & Fundraising
+
+### Donorbox
+
+| Property | Value |
+|----------|-------|
+| **Auto-Detection** | ✅ Yes |
+| **Detection Method** | `window.Donorbox`, `iframe[src*="donorbox.org"]`, `.donorbox-form` |
+| **Conversion Type** | Purchase (Donation) |
+| **Trigger Method** | Custom Event |
+| **Event Name** | `donorbox_donation_complete` |
+| **Fields Available** | Email, Phone, First Name, Last Name |
+| **Special Notes** | Works with embedded Donorbox forms; listens for postMessage events |
+| **Tested** | ⚠️ Needs testing |
+
+**Configuration:**
+- Detection Mode: Auto-Detect
+- Donorbox uses iframe embeds that communicate via postMessage
+
+---
+
+## Restaurant & Food Ordering
+
+### Toast
+
+| Property | Value |
+|----------|-------|
+| **Auto-Detection** | ✅ Yes |
+| **Detection Method** | `window.Toast`, `toasttab.com` domain, `.toast-online-ordering` |
+| **Conversion Type** | Purchase |
+| **Trigger Method** | URL Change |
+| **Success URL** | `/order-confirmation` |
+| **Fields Available** | Email, Phone, First Name, Last Name |
+| **Special Notes** | Works with Toast Tab online ordering system |
+| **Tested** | ⚠️ Needs testing |
+
+**Configuration:**
+- Detection Mode: Auto-Detect
+- Fires on order confirmation page
 
 ---
 
@@ -486,6 +652,14 @@ Based on usage and requests, platforms are prioritized as:
 - ✅ WooCommerce
 - ✅ HubSpot
 - ✅ Elementor Forms
+- ✅ Mailchimp (NEW)
+- ✅ Klaviyo (NEW)
+- ✅ ActiveCampaign (NEW)
+- ✅ Calendly (NEW)
+- ✅ Square Online (NEW)
+- ✅ SurveyMonkey (NEW)
+- ✅ Donorbox (NEW)
+- ✅ Toast (NEW)
 
 **Medium Priority (Next):**
 - ⚠️ Magento

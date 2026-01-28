@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - ActiveCampaign Form Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        ._form {
+            margin-top: 20px;
+        }
+        ._form ._form-content {
+            padding: 20px 0;
+        }
+        ._form ._form_element {
+            margin-bottom: 15px;
+        }
+        ._form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        ._form input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        ._form button._submit {
+            background: #356AE6;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        ._form button._submit:hover {
+            background: #2858c7;
+        }
+        ._form-thank-you {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        ._form-thank-you.show {
+            display: block;
+        }
+        .debug-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+        }
+        #dataLayerOutput {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>ActiveCampaign Form Test</h1>
+        <p>This simulates an ActiveCampaign embedded form for testing the Enhanced Conversion Tracking template.</p>
+
+        <form class="_form" id="_form_1" data-ac-form>
+            <div class="_form-content">
+                <div class="_form_element _field1">
+                    <label>Email Address (required)
+                        <input type="email" name="email" required placeholder="your@email.com">
+                    </label>
+                </div>
+
+                <div class="_form_element _field2">
+                    <label>First Name
+                        <input type="text" name="firstname" placeholder="John">
+                    </label>
+                </div>
+
+                <div class="_form_element _field3">
+                    <label>Last Name
+                        <input type="text" name="lastname" placeholder="Doe">
+                    </label>
+                </div>
+
+                <div class="_form_element _field4">
+                    <label>Phone Number
+                        <input type="tel" name="phone" placeholder="+1 555 123 4567">
+                    </label>
+                </div>
+
+                <div class="_form_element _button-wrapper">
+                    <button type="submit" class="_submit">Subscribe</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="_form-thank-you" role="alert">
+            Thank you for signing up! Please check your inbox.
+        </div>
+
+        <div class="debug-panel">
+            <h3>Debug Panel</h3>
+            <p>DataLayer Events:</p>
+            <div id="dataLayerOutput">Waiting for form submission...</div>
+        </div>
+    </div>
+
+    <!-- Simulate ActiveCampaign global object -->
+    <script>
+        window._ac = {
+            account_id: '123456789',
+            settings: {
+                tracking: true
+            }
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Watch dataLayer for changes
+        const originalPush = window.dataLayer.push;
+        window.dataLayer.push = function() {
+            originalPush.apply(this, arguments);
+            updateDebugPanel();
+        };
+
+        function updateDebugPanel() {
+            const output = document.getElementById('dataLayerOutput');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+        }
+    </script>
+
+    <!-- Test Form Handler -->
+    <script>
+        const form = document.querySelector('._form');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                email: form.querySelector('[name="email"]').value,
+                firstName: form.querySelector('[name="firstname"]').value,
+                lastName: form.querySelector('[name="lastname"]').value,
+                phone: form.querySelector('[name="phone"]').value
+            };
+
+            console.log('ActiveCampaign Form Data:', formData);
+
+            // Simulate submission delay
+            setTimeout(function() {
+                // Hide form content
+                document.querySelector('._form-content').style.display = 'none';
+
+                // Show thank you message
+                document.querySelector('._form-thank-you').classList.add('show');
+
+                // Trigger AC form success event
+                const event = new CustomEvent('ac_form_submit_success', {
+                    detail: {
+                        formId: 1,
+                        data: formData
+                    }
+                });
+                document.dispatchEvent(event);
+
+                console.log('ActiveCampaign form success event fired');
+            }, 800);
+        });
+    </script>
+</body>
+</html>

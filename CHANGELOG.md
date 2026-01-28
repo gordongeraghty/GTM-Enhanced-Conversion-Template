@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-29
+
+### Added
+
+**8 new platform integrations:**
+
+- **Mailchimp** - Marketing automation forms (MC4WP plugin)
+- **ActiveCampaign** - Marketing automation embedded forms
+- **Klaviyo** - E-commerce email marketing forms
+- **Calendly** - Appointment scheduling (via postMessage events)
+- **Square Online** - E-commerce checkout
+- **SurveyMonkey** - Survey completions
+- **Donorbox** - Donation form processing
+- **Toast** - Restaurant online ordering
+
+**New platform categories:**
+- Booking & Appointments
+- Survey & Quiz
+- Donations & Fundraising
+- Restaurant & Food Ordering
+
+**Test files for all new platforms:**
+- test-mailchimp.html
+- test-activecampaign.html
+- test-klaviyo.html
+- test-calendly.html
+- test-square-online.html
+- test-surveymonkey.html
+- test-donorbox.html
+- test-toast.html
+- test-all-platforms.html (comprehensive test suite)
+
+### Changed
+
+- Updated template description to include new platforms
+- Added "Restaurant & Food Ordering" category to manual platform selection
+
+---
+
 ## [1.0.0] - 2026-01-29
 
 Initial public release.
@@ -64,4 +103,5 @@ Initial public release.
 - Contributing guidelines
 - Security policy
 
+[1.1.0]: https://github.com/Empire-Amplify/GTM-Enhanced-Conversion-Template/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Empire-Amplify/GTM-Enhanced-Conversion-Template/releases/tag/v1.0.0

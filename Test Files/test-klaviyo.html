@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Klaviyo Form Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .klaviyo-form {
+            margin-top: 20px;
+        }
+        .klaviyo-form .klaviyo-form-field {
+            margin-bottom: 15px;
+        }
+        .klaviyo-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .klaviyo-form input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .klaviyo-form button {
+            background: #000;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .klaviyo-form button:hover {
+            background: #333;
+        }
+        .klaviyo-form-success {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        .klaviyo-form-success.show {
+            display: block;
+        }
+        .debug-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+        }
+        #dataLayerOutput {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Klaviyo Form Test</h1>
+        <p>This simulates a Klaviyo embedded form for testing the Enhanced Conversion Tracking template.</p>
+
+        <form class="klaviyo-form" id="klaviyo-form-1" data-klaviyo-form>
+            <div class="klaviyo-form-field">
+                <label>Email Address (required)
+                    <input type="email" name="email" required placeholder="your@email.com" data-klaviyo-field="$email">
+                </label>
+            </div>
+
+            <div class="klaviyo-form-field">
+                <label>First Name
+                    <input type="text" name="first_name" placeholder="John" data-klaviyo-field="$first_name">
+                </label>
+            </div>
+
+            <div class="klaviyo-form-field">
+                <label>Last Name
+                    <input type="text" name="last_name" placeholder="Doe" data-klaviyo-field="$last_name">
+                </label>
+            </div>
+
+            <div class="klaviyo-form-field">
+                <label>Phone Number
+                    <input type="tel" name="phone_number" placeholder="+1 555 123 4567" data-klaviyo-field="$phone_number">
+                </label>
+            </div>
+
+            <div class="klaviyo-form-field">
+                <button type="submit">Subscribe</button>
+            </div>
+        </form>
+
+        <div class="klaviyo-form-success" role="alert">
+            Thanks for subscribing! Check your inbox for a welcome message.
+        </div>
+
+        <div class="debug-panel">
+            <h3>Debug Panel</h3>
+            <p>DataLayer Events:</p>
+            <div id="dataLayerOutput">Waiting for form submission...</div>
+        </div>
+    </div>
+
+    <!-- Simulate Klaviyo global object -->
+    <script>
+        window.klaviyo = window.klaviyo || [];
+        window.klaviyo.push = function(args) {
+            console.log('Klaviyo push:', args);
+        };
+
+        window._klOnsite = window._klOnsite || [];
+        window._klOnsite.push = function(args) {
+            console.log('Klaviyo Onsite push:', args);
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Watch dataLayer for changes
+        const originalPush = window.dataLayer.push;
+        window.dataLayer.push = function() {
+            originalPush.apply(this, arguments);
+            updateDebugPanel();
+        };
+
+        function updateDebugPanel() {
+            const output = document.getElementById('dataLayerOutput');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+        }
+    </script>
+
+    <!-- Test Form Handler -->
+    <script>
+        const form = document.querySelector('.klaviyo-form');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                email: form.querySelector('[name="email"]').value,
+                firstName: form.querySelector('[name="first_name"]').value,
+                lastName: form.querySelector('[name="last_name"]').value,
+                phone: form.querySelector('[name="phone_number"]').value
+            };
+
+            console.log('Klaviyo Form Data:', formData);
+
+            // Simulate Klaviyo identify call
+            window.klaviyo.push(['identify', {
+                $email: formData.email,
+                $first_name: formData.firstName,
+                $last_name: formData.lastName,
+                $phone_number: formData.phone
+            }]);
+
+            // Simulate submission delay
+            setTimeout(function() {
+                // Show success message
+                document.querySelector('.klaviyo-form-success').classList.add('show');
+
+                // Trigger Klaviyo form success event
+                const event = new CustomEvent('klaviyoFormSubmitted', {
+                    detail: {
+                        formId: 'ABCD123',
+                        data: formData
+                    }
+                });
+                document.dispatchEvent(event);
+
+                console.log('Klaviyo form submitted event fired');
+            }, 800);
+        });
+    </script>
+</body>
+</html>

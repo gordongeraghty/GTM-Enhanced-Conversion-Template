@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - JotForm Embed Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #ff6100;
+            margin-bottom: 10px;
+        }
+        .jf-badge {
+            background: #ff6100;
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .jotform-form {
+            margin-top: 20px;
+        }
+        .form-line {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .form-label-left .form-label {
+            color: #333;
+        }
+        .form-input input,
+        .form-input textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-input-wide input {
+            max-width: 100%;
+        }
+        .form-name-first,
+        .form-name-last {
+            width: 48%;
+            display: inline-block;
+        }
+        .form-name-last {
+            margin-left: 4%;
+        }
+        .form-submit-button {
+            background: #ff6100;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .form-submit-button:hover {
+            background: #e55800;
+        }
+        .thank-you {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .thank-you.show {
+            display: block;
+        }
+        .debug-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+        }
+        #dataLayerOutput {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>JotForm Test</h1>
+        <span class="jf-badge">Powered by JotForm</span>
+        <p>This simulates a JotForm embedded form for testing the Enhanced Conversion Tracking template.</p>
+
+        <form class="jotform-form" id="form_123456789" name="form_123456789" data-jotform>
+            <div class="form-line" id="id_3">
+                <label class="form-label form-label-left" for="input_3">
+                    Your Name
+                </label>
+                <div class="form-input">
+                    <span class="form-name-first">
+                        <input type="text" name="q3_yourName[first]" id="first_3" placeholder="First Name">
+                    </span>
+                    <span class="form-name-last">
+                        <input type="text" name="q3_yourName[last]" id="last_3" placeholder="Last Name">
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-line" id="id_4">
+                <label class="form-label form-label-left" for="input_4">
+                    Email Address
+                </label>
+                <div class="form-input form-input-wide">
+                    <input type="email" name="q4_email" id="input_4" required placeholder="your@email.com">
+                </div>
+            </div>
+
+            <div class="form-line" id="id_5">
+                <label class="form-label form-label-left" for="input_5">
+                    Phone Number
+                </label>
+                <div class="form-input form-input-wide">
+                    <input type="tel" name="q5_phone" id="input_5" placeholder="+1 555 123 4567">
+                </div>
+            </div>
+
+            <div class="form-line" id="id_6">
+                <label class="form-label form-label-left" for="input_6">
+                    Message
+                </label>
+                <div class="form-input form-input-wide">
+                    <textarea name="q6_message" id="input_6" rows="4" placeholder="Your message..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-line">
+                <button type="submit" class="form-submit-button">Submit</button>
+            </div>
+        </form>
+
+        <div class="thank-you" id="thankYou">
+            <h3>Thank You!</h3>
+            <p>Your submission has been received.</p>
+            <p>Submission ID: JF-987654321</p>
+        </div>
+
+        <div class="debug-panel">
+            <h3>Debug Panel</h3>
+            <p>DataLayer Events:</p>
+            <div id="dataLayerOutput">Waiting for form submission...</div>
+        </div>
+    </div>
+
+    <!-- Simulate JotForm global object -->
+    <script>
+        window.JotForm = {
+            init: function() {
+                console.log('JotForm initialized');
+            },
+            submit: function() {
+                console.log('JotForm submit called');
+            }
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Watch dataLayer for changes
+        const originalPush = window.dataLayer.push;
+        window.dataLayer.push = function() {
+            originalPush.apply(this, arguments);
+            updateDebugPanel();
+        };
+
+        function updateDebugPanel() {
+            const output = document.getElementById('dataLayerOutput');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+        }
+    </script>
+
+    <!-- Test Form Handler -->
+    <script>
+        const form = document.querySelector('.jotform-form');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                email: form.querySelector('[name="q4_email"]').value,
+                firstName: form.querySelector('[name="q3_yourName[first]"]').value,
+                lastName: form.querySelector('[name="q3_yourName[last]"]').value,
+                phone: form.querySelector('[name="q5_phone"]').value,
+                message: form.querySelector('[name="q6_message"]').value
+            };
+
+            console.log('JotForm Data:', formData);
+
+            // Simulate form submission
+            setTimeout(function() {
+                form.style.display = 'none';
+                document.getElementById('thankYou').classList.add('show');
+
+                // Trigger JotForm submit event
+                const jfEvent = new CustomEvent('jotform_submit', {
+                    detail: {
+                        formId: '123456789',
+                        submissionId: 'JF-987654321',
+                        data: formData
+                    }
+                });
+                document.dispatchEvent(jfEvent);
+
+                // Push to dataLayer
+                window.dataLayer.push({
+                    event: 'form_submit',
+                    form_id: '123456789',
+                    submission_id: 'JF-987654321',
+                    user_data: {
+                        email: formData.email,
+                        firstName: formData.firstName,
+                        lastName: formData.lastName,
+                        phone: formData.phone
+                    }
+                });
+
+                console.log('JotForm submit event fired');
+            }, 800);
+        });
+    </script>
+</body>
+</html>

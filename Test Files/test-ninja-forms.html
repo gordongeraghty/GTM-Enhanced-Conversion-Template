@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Ninja Forms Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #e80c7a;
+            margin-bottom: 10px;
+        }
+        .nf-badge {
+            background: #e80c7a;
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .nf-form-cont {
+            margin-top: 20px;
+        }
+        .nf-field-container {
+            margin-bottom: 15px;
+        }
+        .nf-field-label label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        .nf-field-element input,
+        .nf-field-element textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .nf-field-element input:focus,
+        .nf-field-element textarea:focus {
+            border-color: #e80c7a;
+            outline: none;
+        }
+        .submit-container .nf-submit {
+            background: #e80c7a;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .submit-container .nf-submit:hover {
+            background: #c70a68;
+        }
+        .nf-response-msg {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .nf-response-msg.show {
+            display: block;
+        }
+        .debug-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+        }
+        #dataLayerOutput {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Ninja Forms Test</h1>
+        <span class="nf-badge">Powered by Ninja Forms</span>
+        <p>This simulates a Ninja Forms form for testing the Enhanced Conversion Tracking template.</p>
+
+        <div class="nf-form-cont" id="nf-form-1-cont">
+            <form id="nf-form-1" class="nf-form">
+                <div class="nf-field-container email-field">
+                    <div class="nf-field">
+                        <div class="nf-field-label">
+                            <label for="nf-field-1">Email Address <span class="ninja-forms-req-symbol">*</span></label>
+                        </div>
+                        <div class="nf-field-element">
+                            <input type="email" name="email" id="nf-field-1" required placeholder="your@email.com" class="ninja-forms-field nf-element">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nf-field-container firstname-field">
+                    <div class="nf-field">
+                        <div class="nf-field-label">
+                            <label for="nf-field-2">First Name</label>
+                        </div>
+                        <div class="nf-field-element">
+                            <input type="text" name="firstname" id="nf-field-2" placeholder="John" class="ninja-forms-field nf-element">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nf-field-container lastname-field">
+                    <div class="nf-field">
+                        <div class="nf-field-label">
+                            <label for="nf-field-3">Last Name</label>
+                        </div>
+                        <div class="nf-field-element">
+                            <input type="text" name="lastname" id="nf-field-3" placeholder="Doe" class="ninja-forms-field nf-element">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nf-field-container phone-field">
+                    <div class="nf-field">
+                        <div class="nf-field-label">
+                            <label for="nf-field-4">Phone Number</label>
+                        </div>
+                        <div class="nf-field-element">
+                            <input type="tel" name="phone" id="nf-field-4" placeholder="+1 555 123 4567" class="ninja-forms-field nf-element">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nf-field-container message-field">
+                    <div class="nf-field">
+                        <div class="nf-field-label">
+                            <label for="nf-field-5">Message</label>
+                        </div>
+                        <div class="nf-field-element">
+                            <textarea name="message" id="nf-field-5" rows="4" placeholder="Your message..." class="ninja-forms-field nf-element"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nf-field-container submit-container">
+                    <input type="submit" value="Submit" class="nf-submit ninja-forms-field nf-element">
+                </div>
+            </form>
+
+            <div class="nf-response-msg" id="nf-response">
+                <h3>Thank You!</h3>
+                <p>Your form has been submitted successfully.</p>
+            </div>
+        </div>
+
+        <div class="debug-panel">
+            <h3>Debug Panel</h3>
+            <p>DataLayer Events:</p>
+            <div id="dataLayerOutput">Waiting for form submission...</div>
+        </div>
+    </div>
+
+    <!-- Simulate Ninja Forms global objects -->
+    <script>
+        window.nfFrontEnd = {
+            version: '3.6.0'
+        };
+
+        // Ninja Forms backbone models
+        window.nfRadio = {
+            channel: function(name) {
+                return {
+                    trigger: function(event, data) {
+                        console.log('nfRadio triggered:', event, data);
+                    }
+                };
+            }
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Watch dataLayer for changes
+        const originalPush = window.dataLayer.push;
+        window.dataLayer.push = function() {
+            originalPush.apply(this, arguments);
+            updateDebugPanel();
+        };
+
+        function updateDebugPanel() {
+            const output = document.getElementById('dataLayerOutput');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+        }
+    </script>
+
+    <!-- Test Form Handler -->
+    <script>
+        const form = document.getElementById('nf-form-1');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                email: form.querySelector('[name="email"]').value,
+                firstName: form.querySelector('[name="firstname"]').value,
+                lastName: form.querySelector('[name="lastname"]').value,
+                phone: form.querySelector('[name="phone"]').value,
+                message: form.querySelector('[name="message"]').value
+            };
+
+            console.log('Ninja Forms Data:', formData);
+
+            // Simulate form submission
+            setTimeout(function() {
+                form.style.display = 'none';
+                document.getElementById('nf-response').classList.add('show');
+
+                // Trigger Ninja Forms submit response event
+                const nfEvent = new CustomEvent('nfFormSubmitResponse', {
+                    detail: {
+                        formId: 1,
+                        response: {
+                            success: true,
+                            data: {
+                                form_id: 1,
+                                fields: formData
+                            }
+                        }
+                    }
+                });
+                document.dispatchEvent(nfEvent);
+
+                // Push to dataLayer
+                window.dataLayer.push({
+                    event: 'ninja_forms_submit',
+                    form_id: 1,
+                    user_data: {
+                        email: formData.email,
+                        firstName: formData.firstName,
+                        lastName: formData.lastName,
+                        phone: formData.phone
+                    }
+                });
+
+                console.log('Ninja Forms submit event fired');
+            }, 800);
+        });
+    </script>
+</body>
+</html>

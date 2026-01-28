@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Square Online Checkout Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .checkout-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .order-summary {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .checkout-form {
+            margin-top: 20px;
+        }
+        .checkout-form .form-group {
+            margin-bottom: 15px;
+        }
+        .checkout-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .checkout-form input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .checkout-form button {
+            background: #000;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        .checkout-form button:hover {
+            background: #333;
+        }
+        .order-confirmation {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .order-confirmation.show {
+            display: block;
+        }
+        .debug-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+        }
+        #dataLayerOutput {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <h1>Square Online Checkout Test</h1>
+        <p>This simulates a Square Online checkout for testing the Enhanced Conversion Tracking template.</p>
+
+        <div class="order-summary">
+            <h3>Order Summary</h3>
+            <p>Product: Test Item - $49.99</p>
+            <p>Shipping: $5.00</p>
+            <p><strong>Total: $54.99</strong></p>
+        </div>
+
+        <form class="checkout-form" data-square-checkout>
+            <div class="form-group">
+                <label>Email Address (required)
+                    <input type="email" name="email" required placeholder="your@email.com" data-testid="checkout-email">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>First Name
+                    <input type="text" name="firstName" placeholder="John" data-testid="checkout-first-name">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Last Name
+                    <input type="text" name="lastName" placeholder="Doe" data-testid="checkout-last-name">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number
+                    <input type="tel" name="phone" placeholder="+1 555 123 4567" data-testid="checkout-phone">
+                </label>
+            </div>
+
+            <button type="submit">Complete Purchase</button>
+        </form>
+
+        <div class="order-confirmation" id="orderConfirmation">
+            <h3>Order Confirmed!</h3>
+            <p>Order #SQ-12345</p>
+            <p>Thank you for your purchase. A confirmation email has been sent.</p>
+        </div>
+
+        <div class="debug-panel">
+            <h3>Debug Panel</h3>
+            <p>DataLayer Events:</p>
+            <div id="dataLayerOutput">Waiting for checkout...</div>
+        </div>
+    </div>
+
+    <!-- Simulate Square global object -->
+    <script>
+        window.Square = {
+            payments: function(appId, locationId) {
+                return {
+                    card: function() {
+                        return Promise.resolve({});
+                    }
+                };
+            }
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Watch dataLayer for changes
+        const originalPush = window.dataLayer.push;
+        window.dataLayer.push = function() {
+            originalPush.apply(this, arguments);
+            updateDebugPanel();
+        };
+
+        function updateDebugPanel() {
+            const output = document.getElementById('dataLayerOutput');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+        }
+    </script>
+
+    <!-- Test Checkout Handler -->
+    <script>
+        const form = document.querySelector('.checkout-form');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                email: form.querySelector('[name="email"]').value,
+                firstName: form.querySelector('[name="firstName"]').value,
+                lastName: form.querySelector('[name="lastName"]').value,
+                phone: form.querySelector('[name="phone"]').value
+            };
+
+            console.log('Square Checkout Data:', formData);
+
+            // Simulate checkout processing
+            setTimeout(function() {
+                // Hide form
+                form.style.display = 'none';
+
+                // Show confirmation
+                document.getElementById('orderConfirmation').classList.add('show');
+
+                // Simulate URL change to order confirmation
+                // In real scenario, this would redirect to /order-confirmation
+                console.log('Would redirect to: /order-confirmation');
+
+                // Push purchase event to dataLayer
+                window.dataLayer.push({
+                    event: 'purchase',
+                    ecommerce: {
+                        transaction_id: 'SQ-12345',
+                        value: 54.99,
+                        currency: 'USD'
+                    },
+                    customer: {
+                        email: formData.email,
+                        firstName: formData.firstName,
+                        lastName: formData.lastName,
+                        phone: formData.phone
+                    }
+                });
+
+                console.log('Square purchase event fired');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

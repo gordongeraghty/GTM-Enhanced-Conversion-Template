@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Detection Test Suite</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+        }
+        .test-section h2 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .test-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #ddd;
+        }
+        .test-result.pass {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .test-result.fail {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .test-result .platform {
+            font-weight: bold;
+        }
+        .test-result .status {
+            font-size: 14px;
+        }
+        .pass .status {
+            color: #155724;
+        }
+        .fail .status {
+            color: #721c24;
+        }
+        .summary {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .summary h3 {
+            margin-top: 0;
+        }
+        .summary .stats {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .summary .stats .passed {
+            color: #28a745;
+        }
+        .summary .stats .failed {
+            color: #dc3545;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        #log {
+            font-family: monospace;
+            font-size: 12px;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Platform Detection Test Suite</h1>
+        <p class="subtitle">Tests platform detection for all supported platforms including the 8 new additions.</p>
+
+        <div class="controls">
+            <button onclick="runAllTests()">Run All Tests</button>
+            <button onclick="runNewPlatformTests()">Test New Platforms Only</button>
+            <button onclick="clearResults()">Clear Results</button>
+        </div>
+
+        <div class="test-section" id="newPlatforms">
+            <h2>New Platforms (8)</h2>
+            <div id="newPlatformResults"></div>
+        </div>
+
+        <div class="test-section" id="existingPlatforms">
+            <h2>Existing Platforms</h2>
+            <div id="existingPlatformResults"></div>
+        </div>
+
+        <div class="summary" id="summary" style="display: none;">
+            <h3>Test Summary</h3>
+            <div class="stats">
+                <span class="passed" id="passedCount">0</span> Passed /
+                <span class="failed" id="failedCount">0</span> Failed
+            </div>
+        </div>
+
+        <div id="log"></div>
+    </div>
+
+    <script>
+        // ============================================================================
+        // PLATFORM DETECTOR (Extracted from template.tpl)
+        // ============================================================================
+
+        const PlatformDetector = {
+
+            detect: function() {
+                // WordPress form plugins
+                if (this.detectContactForm7()) return 'contactForm7';
+                if (this.detectGravityForms()) return 'gravityForms';
+                if (this.detectWPForms()) return 'wpforms';
+
+                // E-commerce platforms
+                if (this.detectShopify()) return 'shopify';
+                if (this.detectWooCommerce()) return 'woocommerce';
+
+                // Other WordPress forms
+                if (this.detectNinjaForms()) return 'ninjaForms';
+                if (this.detectElementorForms()) return 'elementorForms';
+
+                // Marketing automation
+                if (this.detectHubSpot()) return 'hubspot';
+
+                // Standalone forms
+                if (this.detectTypeform()) return 'typeform';
+                if (this.detectJotForm()) return 'jotform';
+
+                // Other e-commerce
+                if (this.detectMagento()) return 'magento';
+                if (this.detectBigCommerce()) return 'bigcommerce';
+                if (this.detectSquarespace()) return 'squarespace';
+                if (this.detectWix()) return 'wix';
+
+                // Event platforms
+                if (this.detectHumanitix()) return 'humanitix';
+                if (this.detectEventbrite()) return 'eventbrite';
+
+                // CMS
+                if (this.detectWebflow()) return 'webflow';
+                if (this.detectDrupal()) return 'drupal';
+
+                // Learning platforms
+                if (this.detectTeachable()) return 'teachable';
+                if (this.detectThinkific()) return 'thinkific';
+
+                // NEW: Marketing automation (additional)
+                if (this.detectMailchimp()) return 'mailchimp';
+                if (this.detectActiveCampaign()) return 'activecampaign';
+                if (this.detectKlaviyo()) return 'klaviyo';
+
+                // NEW: Booking platforms
+                if (this.detectCalendly()) return 'calendly';
+
+                // NEW: E-commerce (additional)
+                if (this.detectSquareOnline()) return 'squareOnline';
+
+                // NEW: Survey platforms
+                if (this.detectSurveyMonkey()) return 'surveymonkey';
+
+                // NEW: Donation platforms
+                if (this.detectDonorbox()) return 'donorbox';
+
+                // NEW: Restaurant platforms
+                if (this.detectToast()) return 'toast';
+
+                // Google Forms (last, as it's rare)
+                if (this.detectGoogleForms()) return 'googleForms';
+
+                return 'generic';
+            },
+
+            // Existing platforms
+            detectShopify: function() {
+                return !!(window.Shopify || document.querySelector('[data-shopify]') || window.ShopifyAnalytics);
+            },
+
+            detectWooCommerce: function() {
+                return !!(document.body && document.body.classList.contains('woocommerce') ||
+                         document.body && document.body.classList.contains('woocommerce-page') ||
+                         window.wc_add_to_cart_params ||
+                         document.querySelector('.woocommerce'));
+            },
+
+            detectMagento: function() {
+                return !!(window.Magento || document.querySelector('[data-mage-init]'));
+            },
+
+            detectBigCommerce: function() {
+                return !!(window.BCData || document.querySelector('[data-bigcommerce]'));
+            },
+
+            detectSquarespace: function() {
+                return !!(window.Static && window.Static.SQUARESPACE_CONTEXT);
+            },
+
+            detectWix: function() {
+                return !!(window.wixBiSession || document.querySelector('[data-wix-site]'));
+            },
+
+            detectContactForm7: function() {
+                return !!(document.querySelector('.wpcf7-form') || window.wpcf7);
+            },
+
+            detectGravityForms: function() {
+                return !!(document.querySelector('.gform_wrapper') || window.gform);
+            },
+
+            detectWPForms: function() {
+                return !!document.querySelector('.wpforms-form');
+            },
+
+            detectNinjaForms: function() {
+                return !!(document.querySelector('.nf-form-cont') || window.nfFrontEnd);
+            },
+
+            detectElementorForms: function() {
+                return !!document.querySelector('.elementor-form');
+            },
+
+            detectTypeform: function() {
+                return !!(window.tf || document.querySelector('[data-tf-widget]'));
+            },
+
+            detectJotForm: function() {
+                return !!(window.JotForm || document.querySelector('[data-jotform]'));
+            },
+
+            detectGoogleForms: function() {
+                return window.location.hostname === 'docs.google.com' && window.location.pathname.includes('/forms/');
+            },
+
+            detectHubSpot: function() {
+                return !!(window.hbspt || document.querySelector('[data-form-id]') && document.querySelector('.hs-form'));
+            },
+
+            detectHumanitix: function() {
+                return window.location.hostname.includes('humanitix.com') || !!document.querySelector('[data-humanitix]');
+            },
+
+            detectEventbrite: function() {
+                return window.location.hostname.includes('eventbrite.com') || !!window.EB;
+            },
+
+            detectWebflow: function() {
+                return !!document.querySelector('[data-wf-page]');
+            },
+
+            detectDrupal: function() {
+                return !!(window.Drupal || document.querySelector('[data-drupal-selector]'));
+            },
+
+            detectTeachable: function() {
+                return window.location.hostname.includes('teachable.com') || !!window.Teachable;
+            },
+
+            detectThinkific: function() {
+                return window.location.hostname.includes('thinkific.com') || !!window.Thinkific;
+            },
+
+            // NEW PLATFORMS
+
+            detectMailchimp: function() {
+                return !!(window.mc4wp ||
+                         window.MailchimpSubscribe ||
+                         document.querySelector('.mc4wp-form') ||
+                         document.querySelector('[data-mailchimp-form]'));
+            },
+
+            detectActiveCampaign: function() {
+                return !!(window._ac ||
+                         document.querySelector('._form') ||
+                         document.querySelector('[data-ac-form]') ||
+                         document.querySelector('script[src*="activehosted.com"]'));
+            },
+
+            detectKlaviyo: function() {
+                return !!(window.klaviyo ||
+                         window._klOnsite ||
+                         document.querySelector('.klaviyo-form') ||
+                         document.querySelector('[data-klaviyo-form]'));
+            },
+
+            detectCalendly: function() {
+                return !!(window.Calendly ||
+                         document.querySelector('.calendly-inline-widget') ||
+                         document.querySelector('[data-url*="calendly.com"]'));
+            },
+
+            detectSquareOnline: function() {
+                return !!(window.Square ||
+                         document.querySelector('[data-square-checkout]') ||
+                         window.location.hostname.includes('square.site'));
+            },
+
+            detectSurveyMonkey: function() {
+                return !!(window.SM ||
+                         window.location.hostname.includes('surveymonkey.com') ||
+                         document.querySelector('[data-surveymonkey]'));
+            },
+
+            detectDonorbox: function() {
+                return !!(window.Donorbox ||
+                         document.querySelector('iframe[src*="donorbox.org"]') ||
+                         document.querySelector('.donorbox-form'));
+            },
+
+            detectToast: function() {
+                return !!(window.Toast ||
+                         window.location.hostname.includes('toasttab.com') ||
+                         document.querySelector('.toast-online-ordering'));
+            }
+        };
+
+        // ============================================================================
+        // TEST RUNNER
+        // ============================================================================
+
+        let passedTests = 0;
+        let failedTests = 0;
+
+        function log(message) {
+            const logEl = document.getElementById('log');
+            logEl.textContent += message + '\n';
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('newPlatformResults').innerHTML = '';
+            document.getElementById('existingPlatformResults').innerHTML = '';
+            document.getElementById('summary').style.display = 'none';
+            document.getElementById('log').textContent = '';
+            passedTests = 0;
+            failedTests = 0;
+            // Clear any test fixtures
+            clearTestFixtures();
+        }
+
+        function clearTestFixtures() {
+            // Reset window objects - New platforms
+            delete window.mc4wp;
+            delete window.MailchimpSubscribe;
+            delete window._ac;
+            delete window.klaviyo;
+            delete window._klOnsite;
+            delete window.Calendly;
+            delete window.Square;
+            delete window.SM;
+            delete window.Donorbox;
+            delete window.Toast;
+
+            // Reset window objects - Existing platforms
+            delete window.Shopify;
+            delete window.wpcf7;
+            delete window.gform;
+            delete window.hbspt;
+            delete window.tf;
+            delete window.EB;
+            delete window.Magento;
+            delete window.BCData;
+            delete window.nfFrontEnd;
+            delete window.JotForm;
+
+            // Remove test DOM elements
+            document.querySelectorAll('.test-fixture').forEach(el => el.remove());
+        }
+
+        function addTestResult(container, platform, passed, message) {
+            const resultEl = document.createElement('div');
+            resultEl.className = 'test-result ' + (passed ? 'pass' : 'fail');
+            resultEl.innerHTML = `
+                <span class="platform">${platform}</span>
+                <span class="status">${passed ? '✓ PASS' : '✗ FAIL'} - ${message}</span>
+            `;
+            document.getElementById(container).appendChild(resultEl);
+
+            if (passed) passedTests++;
+            else failedTests++;
+        }
+
+        function updateSummary() {
+            document.getElementById('passedCount').textContent = passedTests;
+            document.getElementById('failedCount').textContent = failedTests;
+            document.getElementById('summary').style.display = 'block';
+        }
+
+        // ============================================================================
+        // NEW PLATFORM TESTS
+        // ============================================================================
+
+        function testMailchimp() {
+            log('Testing Mailchimp detection...');
+            clearTestFixtures();
+
+            // Test 1: Window object detection
+            window.mc4wp = { forms: {} };
+            let detected = PlatformDetector.detectMailchimp();
+            if (!detected) {
+                addTestResult('newPlatformResults', 'Mailchimp', false, 'Failed to detect via window.mc4wp');
+                return;
+            }
+
+            // Test 2: DOM detection
+            delete window.mc4wp;
+            const form = document.createElement('form');
+            form.className = 'mc4wp-form test-fixture';
+            document.body.appendChild(form);
+            detected = PlatformDetector.detectMailchimp();
+
+            addTestResult('newPlatformResults', 'Mailchimp', detected, detected ? 'Detected via window object and DOM' : 'Failed DOM detection');
+            log('Mailchimp test: ' + (detected ? 'PASSED' : 'FAILED'));
+        }
+
+        function testActiveCampaign() {
+            log('Testing ActiveCampaign detection...');
+            clearTestFixtures();
+
+            // Test 1: Window object detection
+            window._ac = { account_id: '123' };
+            let detected = PlatformDetector.detectActiveCampaign();
+            if (!detected) {
+                addTestResult('newPlatformResults', 'ActiveCampaign', false, 'Failed to detect via window._ac');
+                return;
+            }
+
+            // Test 2: DOM detection
+            delete window._ac;
+            const form = document.createElement('form');
+            form.className = '_form test-fixture';
+            document.body.appendChild(form);
+            detected = PlatformDetector.detectActiveCampaign();
+
+            addTestResult('newPlatformResults', 'ActiveCampaign', detected, detected ? 'Detected via window object and DOM' : 'Failed DOM detection');
+            log('ActiveCampaign test: ' + (detected ? 'PASSED' : 'FAILED'));
+        }
+
+        function testKlaviyo() {
+            log('Testing Klaviyo detection...');
+            clearTestFixtures();
+
+            // Test 1: Window object detection
+            window.klaviyo = [];
+            let detected = PlatformDetector.detectKlaviyo();
+            if (!detected) {
+                addTestResult('newPlatformResults', 'Klaviyo', false, 'Failed to detect via window.klaviyo');
+                return;
+            }
+
+            // Test 2: DOM detection
+            delete window.klaviyo;
+            const form = document.createElement('form');
+            form.className = 'klaviyo-form test-fixture';
+            document.body.appendChild(form);
+            detected = PlatformDetector.detectKlaviyo();
+
+            addTestResult('newPlatformResults', 'Klaviyo', detected, detected ? 'Detected via window object and DOM' : 'Failed DOM detection');
+            log('Klaviyo test: ' + (detected ? 'PASSED' : 'FAILED'));
+        }
+
+        function testCalendly() {
+            log('Testing Calendly detection...');
+            clearTestFixtures();
+
+            // Test 1: Window object detection
+            window.Calendly = { initInlineWidget: function() {} };
+            let detected = PlatformDetector.detectCalendly();
+            if (!detected) {
+                addTestResult('newPlatformResults', 'Calendly', false, 'Failed to detect via window.Calendly');
+                return;
+            }
+
+            // Test 2: DOM detection
+            delete window.Calendly;
+            const widget = document.createElement('div');
+            widget.className = 'calendly-inline-widget test-fixture';
+            document.body.appendChild(widget);
+            detected = PlatformDetector.detectCalendly();
+
+            addTestResult('newPlatformResults', 'Calendly', detected, detected ? 'Detected via window object and DOM' : 'Failed DOM detection');
+            log('Calendly test: ' + (detected ? 'PASSED' : 'FAILED'));
+        }
+
+        function testSquareOnline() {
+            log('Testing Square Online detection...');
+            clearTestFixtures();
+
+            // Test 1: Window object detection
+            window.Square = { payments: function() {} };
+            let detected = PlatformDetector.detectSquareOnline();
+            if (!detected) {
+                addTestResult('newPlatformResults', 'Square Online', false, 'Failed to detect via window.Square');
+                return;
+            }
+
+            // Test 2: DOM detection
+            delete window.Square;
+            const checkout = document.createElement('form');
+            checkout.setAttribute('data-square-checkout', 'true');
+            checkout.className = 'test-fixture';
+            document.body.appendChild(checkout);
+            detected = PlatformDetector.detectSquareOnline();
+
+            addTestResult('newPlatformResults', 'Square Online', detected, detected ? 'Detected via window object and DOM' : 'Failed DOM detection');
+            log('Square Online test: ' + (detected ? 'PASSED' : 'FAILED'));
+        }
+
+        function testSurveyMonkey() {
+            log('Testing SurveyMonkey detection...');
+            clearTestFixtures();
+
+            // Test 1: Window object detection
+            window.SM = { survey: {} };
+            let detected = PlatformDetector.detectSurveyMonkey();
+            if (!detected) {
+                addTestResult('newPlatformResults', 'SurveyMonkey', false, 'Failed to detect via window.SM');
+                return;
+            }
+
+            // Test 2: DOM detection
+            delete window.SM;
+            const survey = document.createElement('div');
+            survey.setAttribute('data-surveymonkey', 'true');
+            survey.className = 'test-fixture';
+            document.body.appendChild(survey);
+            detected = PlatformDetector.detectSurveyMonkey();
+
+            addTestResult('newPlatformResults', 'SurveyMonkey', detected, detected ? 'Detected via window object and DOM' : 'Failed DOM detection');
+            log('SurveyMonkey test: ' + (detected ? 'PASSED' : 'FAILED'));
+        }
+
+        function testDonorbox() {
+            log('Testing Donorbox detection...');
+            clearTestFixtures();
+
+            // Test 1: Window object detection
+            window.Donorbox = { version: '2.0' };
+            let detected = PlatformDetector.detectDonorbox();
+            if (!detected) {
+                addTestResult('newPlatformResults', 'Donorbox', false, 'Failed to detect via window.Donorbox');
+                return;
+            }
+
+            // Test 2: DOM detection
+            delete window.Donorbox;
+            const form = document.createElement('form');
+            form.className = 'donorbox-form test-fixture';
+            document.body.appendChild(form);
+            detected = PlatformDetector.detectDonorbox();
+
+            addTestResult('newPlatformResults', 'Donorbox', detected, detected ? 'Detected via window object and DOM' : 'Failed DOM detection');
+            log('Donorbox test: ' + (detected ? 'PASSED' : 'FAILED'));
+        }
+
+        function testToast() {
+            log('Testing Toast detection...');
+            clearTestFixtures();
+
+            // Test 1: Window object detection
+            window.Toast = { init: function() {} };
+            let detected = PlatformDetector.detectToast();
+            if (!detected) {
+                addTestResult('newPlatformResults', 'Toast', false, 'Failed to detect via window.Toast');
+                return;
+            }
+
+            // Test 2: DOM detection
+            delete window.Toast;
+            const form = document.createElement('form');
+            form.className = 'toast-online-ordering test-fixture';
+            document.body.appendChild(form);
+            detected = PlatformDetector.detectToast();
+
+            addTestResult('newPlatformResults', 'Toast', detected, detected ? 'Detected via window object and DOM' : 'Failed DOM detection');
+            log('Toast test: ' + (detected ? 'PASSED' : 'FAILED'));
+        }
+
+        // ============================================================================
+        // EXISTING PLATFORM TESTS (Smoke tests)
+        // ============================================================================
+
+        function testExistingPlatforms() {
+            log('Testing existing platforms...');
+            clearTestFixtures();
+
+            const platforms = [
+                // E-commerce
+                { name: 'Shopify', setup: () => window.Shopify = {}, detect: () => PlatformDetector.detectShopify() },
+                { name: 'Magento', setup: () => window.Magento = {}, detect: () => PlatformDetector.detectMagento() },
+                { name: 'BigCommerce', setup: () => window.BCData = {}, detect: () => PlatformDetector.detectBigCommerce() },
+
+                // WordPress Forms
+                { name: 'Contact Form 7', setup: () => window.wpcf7 = {}, detect: () => PlatformDetector.detectContactForm7() },
+                { name: 'Gravity Forms', setup: () => window.gform = {}, detect: () => PlatformDetector.detectGravityForms() },
+                { name: 'Ninja Forms', setup: () => window.nfFrontEnd = {}, detect: () => PlatformDetector.detectNinjaForms() },
+
+                // Marketing Automation
+                { name: 'HubSpot', setup: () => window.hbspt = {}, detect: () => PlatformDetector.detectHubSpot() },
+
+                // Standalone Forms
+                { name: 'Typeform', setup: () => window.tf = {}, detect: () => PlatformDetector.detectTypeform() },
+                { name: 'JotForm', setup: () => window.JotForm = {}, detect: () => PlatformDetector.detectJotForm() },
+
+                // Events
+                { name: 'Eventbrite', setup: () => window.EB = {}, detect: () => PlatformDetector.detectEventbrite() }
+            ];
+
+            platforms.forEach(platform => {
+                clearTestFixtures();
+                platform.setup();
+                const detected = platform.detect();
+                addTestResult('existingPlatformResults', platform.name, detected, detected ? 'Detection working' : 'Detection failed');
+                log(platform.name + ' test: ' + (detected ? 'PASSED' : 'FAILED'));
+            });
+
+            // DOM-based detection for Webflow (uses data-wf-page attribute)
+            log('Testing Webflow (DOM-based)...');
+            clearTestFixtures();
+            const wfEl = document.createElement('div');
+            wfEl.setAttribute('data-wf-page', 'test');
+            wfEl.className = 'test-fixture';
+            document.body.appendChild(wfEl);
+            const wfDetected = PlatformDetector.detectWebflow();
+            addTestResult('existingPlatformResults', 'Webflow', wfDetected, wfDetected ? 'Detection working' : 'Detection failed');
+            log('Webflow test: ' + (wfDetected ? 'PASSED' : 'FAILED'));
+        }
+
+        // ============================================================================
+        // TEST RUNNERS
+        // ============================================================================
+
+        function runNewPlatformTests() {
+            clearResults();
+            log('=== Running New Platform Tests ===\n');
+
+            testMailchimp();
+            testActiveCampaign();
+            testKlaviyo();
+            testCalendly();
+            testSquareOnline();
+            testSurveyMonkey();
+            testDonorbox();
+            testToast();
+
+            clearTestFixtures();
+            updateSummary();
+            log('\n=== Tests Complete ===');
+        }
+
+        function runAllTests() {
+            clearResults();
+            log('=== Running All Platform Tests ===\n');
+
+            // New platforms
+            log('\n--- New Platforms ---\n');
+            testMailchimp();
+            testActiveCampaign();
+            testKlaviyo();
+            testCalendly();
+            testSquareOnline();
+            testSurveyMonkey();
+            testDonorbox();
+            testToast();
+
+            // Existing platforms
+            log('\n--- Existing Platforms ---\n');
+            testExistingPlatforms();
+
+            clearTestFixtures();
+            updateSummary();
+            log('\n=== All Tests Complete ===');
+        }
+    </script>
+</body>
+</html>

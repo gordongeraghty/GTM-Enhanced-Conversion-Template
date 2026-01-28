@@ -1,0 +1,33 @@
+# Copyright 2026 Gordon Geraghty
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+homepage: "https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template"
+documentation: "https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template/blob/main/TEMPLATE_GUIDE.md"
+versions:
+  - sha: f61e276a965b3d5ab8408599f9011fbf89f92c42
+    changeNotes: |
+      Initial release v1.0.0
+      - Universal Enhanced Conversion Tracking for Google Ads
+      - Auto-detection for 50+ platforms
+      - E-commerce: Shopify, WooCommerce, Magento, BigCommerce
+      - WordPress Forms: Contact Form 7, Gravity Forms, WPForms, Ninja Forms
+      - Standalone Forms: Typeform, JotForm, Formstack, Cognito Forms
+      - Marketing Automation: HubSpot, Mailchimp, Klaviyo, ActiveCampaign
+      - Booking: Calendly
+      - Surveys: SurveyMonkey
+      - Donations: Donorbox
+      - Restaurant: Toast
+      - Email validation and phone normalization
+      - Debug mode for troubleshooting
+      - GTM Consent Mode support

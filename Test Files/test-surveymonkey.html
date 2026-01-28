@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - SurveyMonkey Survey Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .survey-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #00BF6F;
+            margin-bottom: 10px;
+        }
+        .sm-logo {
+            color: #00BF6F;
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+        .survey-form {
+            margin-top: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .question:last-of-type {
+            border-bottom: none;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .question input[type="text"],
+        .question input[type="email"],
+        .question input[type="tel"],
+        .question textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .question textarea {
+            min-height: 80px;
+        }
+        .radio-options label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .radio-options input[type="radio"] {
+            margin-right: 10px;
+        }
+        .survey-form button {
+            background: #00BF6F;
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .survey-form button:hover {
+            background: #00a85f;
+        }
+        .survey-complete {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        .survey-complete.show {
+            display: block;
+        }
+        .survey-complete h2 {
+            color: #00BF6F;
+        }
+        .debug-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+        }
+        #dataLayerOutput {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="survey-container">
+        <h1>Customer Feedback Survey</h1>
+        <div class="sm-logo">Powered by SurveyMonkey</div>
+        <p>This simulates a SurveyMonkey embedded survey for testing the Enhanced Conversion Tracking template.</p>
+
+        <form class="survey-form" data-surveymonkey>
+            <div class="question">
+                <label>1. What is your email address?</label>
+                <input type="email" name="email" required placeholder="your@email.com">
+            </div>
+
+            <div class="question">
+                <label>2. What is your name?</label>
+                <input type="text" name="first_name" placeholder="First Name" style="width: 48%; display: inline-block; margin-right: 4%;">
+                <input type="text" name="last_name" placeholder="Last Name" style="width: 48%; display: inline-block;">
+            </div>
+
+            <div class="question">
+                <label>3. What is your phone number? (optional)</label>
+                <input type="tel" name="phone" placeholder="+1 555 123 4567">
+            </div>
+
+            <div class="question">
+                <label>4. How satisfied are you with our product?</label>
+                <div class="radio-options">
+                    <label><input type="radio" name="satisfaction" value="5"> Very Satisfied</label>
+                    <label><input type="radio" name="satisfaction" value="4"> Satisfied</label>
+                    <label><input type="radio" name="satisfaction" value="3"> Neutral</label>
+                    <label><input type="radio" name="satisfaction" value="2"> Dissatisfied</label>
+                    <label><input type="radio" name="satisfaction" value="1"> Very Dissatisfied</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <label>5. Any additional feedback?</label>
+                <textarea name="feedback" placeholder="Share your thoughts..."></textarea>
+            </div>
+
+            <button type="submit">Submit Survey</button>
+        </form>
+
+        <div class="survey-complete" id="surveyComplete">
+            <h2>Thank You!</h2>
+            <p>Your response has been recorded.</p>
+            <p>Survey ID: SM-789456</p>
+        </div>
+
+        <div class="debug-panel">
+            <h3>Debug Panel</h3>
+            <p>DataLayer Events:</p>
+            <div id="dataLayerOutput">Waiting for survey submission...</div>
+        </div>
+    </div>
+
+    <!-- Simulate SurveyMonkey global object -->
+    <script>
+        window.SM = {
+            Event: {
+                SURVEY_COMPLETED: 'surveyCompleted'
+            },
+            survey: {
+                id: 'SM-789456'
+            }
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Watch dataLayer for changes
+        const originalPush = window.dataLayer.push;
+        window.dataLayer.push = function() {
+            originalPush.apply(this, arguments);
+            updateDebugPanel();
+        };
+
+        function updateDebugPanel() {
+            const output = document.getElementById('dataLayerOutput');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+        }
+    </script>
+
+    <!-- Test Survey Handler -->
+    <script>
+        const form = document.querySelector('.survey-form');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                email: form.querySelector('[name="email"]').value,
+                firstName: form.querySelector('[name="first_name"]').value,
+                lastName: form.querySelector('[name="last_name"]').value,
+                phone: form.querySelector('[name="phone"]').value,
+                satisfaction: form.querySelector('[name="satisfaction"]:checked')?.value,
+                feedback: form.querySelector('[name="feedback"]').value
+            };
+
+            console.log('SurveyMonkey Survey Data:', formData);
+
+            // Simulate survey submission
+            setTimeout(function() {
+                // Hide form
+                form.style.display = 'none';
+
+                // Show completion message
+                document.getElementById('surveyComplete').classList.add('show');
+
+                // Simulate URL change (SurveyMonkey typically goes to /r/completed)
+                console.log('Would redirect to: /r/SM-789456/completed');
+
+                // Push survey completion event to dataLayer
+                window.dataLayer.push({
+                    event: 'survey_completed',
+                    survey_id: 'SM-789456',
+                    respondent: {
+                        email: formData.email,
+                        firstName: formData.firstName,
+                        lastName: formData.lastName,
+                        phone: formData.phone
+                    }
+                });
+
+                // Trigger SurveyMonkey completion event
+                const smEvent = new CustomEvent('sm_survey_completed', {
+                    detail: {
+                        surveyId: 'SM-789456',
+                        respondent: formData
+                    }
+                });
+                document.dispatchEvent(smEvent);
+
+                console.log('SurveyMonkey survey completed event fired');
+            }, 800);
+        });
+    </script>
+</body>
+</html>
