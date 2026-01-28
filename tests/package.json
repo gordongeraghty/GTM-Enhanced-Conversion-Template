@@ -1,0 +1,26 @@
+{
+  "name": "gtm-enhanced-conversion-template-tests",
+  "version": "1.0.0",
+  "description": "Tests for GTM Enhanced Conversion Template",
+  "scripts": {
+    "test": "jasmine",
+    "test:browser": "echo 'Open tests/test-runner.html in your browser'"
+  },
+  "devDependencies": {
+    "jasmine": "^5.0.0",
+    "jasmine-reporters": "^2.5.2",
+    "jsdom": "^22.0.0"
+  },
+  "keywords": [
+    "gtm",
+    "google-tag-manager",
+    "testing",
+    "enhanced-conversions"
+  ],
+  "license": "MIT",
+  "author": "Gordon Geraghty",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gordonkgeraghty/GTM-Enhanced-Conversion-Template.git"
+  }
+}

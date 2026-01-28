@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Gravity Forms Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .gform_wrapper {
+            margin-top: 20px;
+        }
+        .gform_body ul {
+            list-style: none;
+            padding: 0;
+        }
+        .gfield {
+            margin-bottom: 20px;
+        }
+        .gfield_label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .ginput_container input,
+        .ginput_container textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .ginput_container textarea {
+            min-height: 100px;
+        }
+        .gform_button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .gform_button:hover {
+            background: #45a049;
+        }
+        .gform_confirmation_message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        .gform_confirmation_message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Gravity Forms Test</h1>
+        <p>This simulates a Gravity Forms form for testing the Enhanced Conversion Tracking template.</p>
+
+        <div class="gform_wrapper" id="gform_wrapper_1">
+            <form method="post" id="gform_1" class="gform_1">
+                <div class="gform_body">
+                    <ul class="gform_fields">
+                        <li class="gfield gfield_contains_required">
+                            <label class="gfield_label" for="input_1_1">
+                                Email <span class="gfield_required">*</span>
+                            </label>
+                            <div class="ginput_container">
+                                <input type="email" name="input_1" id="input_1_1" class="medium" required>
+                            </div>
+                        </li>
+
+                        <li class="gfield">
+                            <label class="gfield_label" for="input_1_2">Phone</label>
+                            <div class="ginput_container">
+                                <input type="tel" name="input_2" id="input_1_2" class="medium">
+                            </div>
+                        </li>
+
+                        <li class="gfield">
+                            <label class="gfield_label" for="input_1_3">First Name</label>
+                            <div class="ginput_container">
+                                <input type="text" name="input_3" id="input_1_3" class="medium">
+                            </div>
+                        </li>
+
+                        <li class="gfield">
+                            <label class="gfield_label" for="input_1_4">Last Name</label>
+                            <div class="ginput_container">
+                                <input type="text" name="input_4" id="input_1_4" class="medium">
+                            </div>
+                        </li>
+
+                        <li class="gfield">
+                            <label class="gfield_label" for="input_1_5">Message</label>
+                            <div class="ginput_container">
+                                <textarea name="input_5" id="input_1_5" class="textarea medium"></textarea>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="gform_footer">
+                    <input type="submit" id="gform_submit_button_1" class="gform_button button" value="Submit">
+                </div>
+            </form>
+
+            <div class="gform_confirmation_message" id="gform_confirmation_message_1">
+                Thanks for contacting us! We will get in touch with you shortly.
+            </div>
+        </div>
+    </div>
+
+    <!-- Simulate Gravity Forms global object -->
+    <script>
+        window.gform = {
+            hooks: {
+                addAction: function() {},
+                addFilter: function() {}
+            }
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+    </script>
+
+    <!-- Test Form Handler -->
+    <script>
+        const form = document.getElementById('gform_1');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                email: document.getElementById('input_1_1').value,
+                phone: document.getElementById('input_1_2').value,
+                firstName: document.getElementById('input_1_3').value,
+                lastName: document.getElementById('input_1_4').value
+            };
+
+            console.log('Gravity Forms Data:', formData);
+
+            // Simulate AJAX submission
+            setTimeout(function() {
+                // Hide form
+                form.style.display = 'none';
+
+                // Show confirmation message
+                document.getElementById('gform_confirmation_message_1').classList.add('show');
+
+                console.log('Gravity Forms submitted successfully');
+            }, 800);
+        });
+    </script>
+</body>
+</html>

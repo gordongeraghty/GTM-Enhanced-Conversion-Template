@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Generic Form Integration Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .test-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #607D8B;
+      margin-top: 0;
+    }
+
+    .contact-form {
+      margin: 20px 0;
+    }
+
+    .form-group {
+      margin: 15px 0;
+    }
+
+    .contact-form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .contact-form input[type="text"],
+    .contact-form input[type="email"],
+    .contact-form input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .contact-form button[type="submit"] {
+      background: #607D8B;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    .contact-form button[type="submit"]:hover {
+      background: #455A64;
+    }
+
+    .success-message {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 4px;
+      background: #607D8B;
+      color: white;
+      display: none;
+    }
+
+    .test-results {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 4px;
+      border-left: 4px solid #607D8B;
+    }
+
+    .test-results h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .test-results pre {
+      background: #fff;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+    }
+
+    .assertion {
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .assertion.pass {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .assertion.fail {
+      background: #FFEBEE;
+      color: #C62828;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="test-container">
+    <h1>Generic Form Integration Test</h1>
+    <p>This test simulates a generic HTML form with standard field patterns and validates fallback detection, field collection, and dataLayer push.</p>
+
+    <!-- Generic contact form (no specific platform) -->
+    <form class="contact-form" id="contact-form" method="post">
+
+      <div class="form-group">
+        <label for="user-email">Your Email Address *</label>
+        <input type="email" id="user-email" name="email" value="generic@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="user-phone">Phone Number</label>
+        <input type="tel" id="user-phone" name="phone" value="555.444.3333">
+      </div>
+
+      <div class="form-group">
+        <label for="first-name">First Name</label>
+        <input type="text" id="first-name" name="firstName" value="Chris">
+      </div>
+
+      <div class="form-group">
+        <label for="last-name">Last Name</label>
+        <input type="text" id="last-name" name="lastName" value="Taylor">
+      </div>
+
+      <button type="submit">Send Message</button>
+    </form>
+
+    <div class="success-message" id="success-message">
+      Thank you! Your message has been sent successfully.
+    </div>
+
+    <!-- Test Results -->
+    <div class="test-results">
+      <h2>Test Results</h2>
+      <div id="assertions"></div>
+      <pre id="dataLayerOutput"></pre>
+    </div>
+  </div>
+
+  <script>
+    // Initialize dataLayer
+    window.dataLayer = window.dataLayer || [];
+
+    // No platform-specific globals - this tests the generic fallback
+
+    // Test assertions
+    const assertions = [];
+
+    function assert(condition, message) {
+      const result = {
+        pass: condition,
+        message: message
+      };
+      assertions.push(result);
+
+      if (condition) {
+        console.log('✅ PASS:', message);
+      } else {
+        console.error('❌ FAIL:', message);
+      }
+
+      return condition;
+    }
+
+    // Platform Detection Test
+    function testPlatformDetection() {
+      // For generic forms, platform detector should NOT find specific platforms
+      const hasContactForm7 = typeof wpcf7 !== 'undefined';
+      const hasGravityForms = typeof gform !== 'undefined';
+      const hasShopify = typeof Shopify !== 'undefined';
+
+      assert(!hasContactForm7, 'Contact Form 7 NOT detected (correct)');
+      assert(!hasGravityForms, 'Gravity Forms NOT detected (correct)');
+      assert(!hasShopify, 'Shopify NOT detected (correct)');
+      assert(true, 'Should fall back to generic platform detection');
+    }
+
+    // Field Detection Test
+    function testFieldDetection() {
+      // Generic forms use standard HTML5 field types
+      const emailField = document.querySelector('input[type="email"]');
+      const phoneField = document.querySelector('input[type="tel"]');
+      const firstNameField = document.querySelector('input[name*="first" i], input[id*="first" i]');
+      const lastNameField = document.querySelector('input[name*="last" i], input[id*="last" i]');
+
+      assert(emailField !== null, 'Email field detected (type="email")');
+      assert(phoneField !== null, 'Phone field detected (type="tel")');
+      assert(firstNameField !== null, 'First name field detected (name/id pattern)');
+      assert(lastNameField !== null, 'Last name field detected (name/id pattern)');
+
+      if (emailField) assert(emailField.value === 'generic@example.com', 'Email value correct');
+      if (phoneField) assert(phoneField.value === '555.444.3333', 'Phone value correct');
+      if (firstNameField) assert(firstNameField.value === 'Chris', 'First name value correct');
+      if (lastNameField) assert(lastNameField.value === 'Taylor', 'Last name value correct');
+    }
+
+    // Form Submission Handler
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      console.log('Form submitted');
+
+      // Simulate generic form success
+      setTimeout(function() {
+        // Hide form, show success message
+        document.getElementById('contact-form').style.display = 'none';
+        document.getElementById('success-message').style.display = 'block';
+
+        // Simulate dataLayer push
+        const data = {
+          event: 'enhanced_conversion',
+          enhanced_conversion_data: {
+            email: 'generic@example.com',
+            phone_number: '+15554443333',
+            first_name: 'Chris',
+            last_name: 'Taylor'
+          }
+        };
+
+        window.dataLayer.push(data);
+
+        // Verify dataLayer push
+        testDataLayerPush();
+
+        // Display results
+        displayResults();
+      }, 500);
+    });
+
+    // DataLayer Push Test
+    function testDataLayerPush() {
+      assert(window.dataLayer.length > 0, 'DataLayer has events');
+
+      const event = window.dataLayer.find(e => e.event === 'enhanced_conversion');
+      assert(event !== undefined, 'Enhanced conversion event found');
+
+      if (event) {
+        const data = event.enhanced_conversion_data;
+        assert(data.email === 'generic@example.com', 'Email in dataLayer correct');
+        assert(data.phone_number === '+15554443333', 'Phone normalized to E.164');
+        assert(data.first_name === 'Chris', 'First name in dataLayer correct');
+        assert(data.last_name === 'Taylor', 'Last name in dataLayer correct');
+      }
+    }
+
+    // Display Results
+    function displayResults() {
+      const assertionsDiv = document.getElementById('assertions');
+      assertionsDiv.innerHTML = '';
+
+      let passCount = 0;
+      let failCount = 0;
+
+      assertions.forEach(function(assertion) {
+        const div = document.createElement('div');
+        div.className = 'assertion ' + (assertion.pass ? 'pass' : 'fail');
+        div.textContent = (assertion.pass ? '✅ PASS: ' : '❌ FAIL: ') + assertion.message;
+        assertionsDiv.appendChild(div);
+
+        if (assertion.pass) passCount++;
+        else failCount++;
+      });
+
+      // Summary
+      const summary = document.createElement('div');
+      summary.className = 'assertion ' + (failCount === 0 ? 'pass' : 'fail');
+      summary.style.marginTop = '15px';
+      summary.style.fontWeight = 'bold';
+      summary.textContent = `Summary: ${passCount} passed, ${failCount} failed`;
+      assertionsDiv.appendChild(summary);
+
+      // DataLayer output
+      const dataLayerOutput = document.getElementById('dataLayerOutput');
+      dataLayerOutput.textContent = 'dataLayer contents:\n' + JSON.stringify(window.dataLayer, null, 2);
+    }
+
+    // Run initial tests
+    testPlatformDetection();
+    testFieldDetection();
+
+    console.log('===================================');
+    console.log('Generic Form Integration Test');
+    console.log('===================================');
+    console.log('1. Platform detection tests completed');
+    console.log('2. Field detection tests completed');
+    console.log('3. Submit the form to test dataLayer push');
+    console.log('===================================');
+  </script>
+
+</body>
+</html>

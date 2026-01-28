@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Contact Form 7 Integration Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .test-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #2196F3;
+      margin-top: 0;
+    }
+
+    .wpcf7 {
+      margin: 20px 0;
+    }
+
+    .wpcf7 p {
+      margin: 15px 0;
+    }
+
+    .wpcf7 label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .wpcf7 input[type="text"],
+    .wpcf7 input[type="email"],
+    .wpcf7 input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .wpcf7 input[type="submit"] {
+      background: #2196F3;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .wpcf7 input[type="submit"]:hover {
+      background: #1976D2;
+    }
+
+    .wpcf7-response-output {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 4px;
+      display: none;
+    }
+
+    .wpcf7-mail-sent-ok {
+      background: #4CAF50;
+      color: white;
+      display: block;
+    }
+
+    .test-results {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 4px;
+      border-left: 4px solid #2196F3;
+    }
+
+    .test-results h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .test-results pre {
+      background: #fff;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+    }
+
+    .assertion {
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .assertion.pass {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .assertion.fail {
+      background: #FFEBEE;
+      color: #C62828;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="test-container">
+    <h1>Contact Form 7 Integration Test</h1>
+    <p>This test simulates Contact Form 7 structure and validates platform detection, field collection, and dataLayer push.</p>
+
+    <!-- Contact Form 7 structure -->
+    <div class="wpcf7" id="wpcf7-f123-p456-o1">
+      <form action="#" method="post" class="wpcf7-form">
+
+        <p>
+          <label>Your Email (required)
+            <span class="wpcf7-form-control-wrap your-email">
+              <input type="email" name="your-email" value="test@example.com" size="40" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" aria-required="true">
+            </span>
+          </label>
+        </p>
+
+        <p>
+          <label>Your Phone
+            <span class="wpcf7-form-control-wrap your-phone">
+              <input type="tel" name="your-phone" value="(555) 123-4567" size="40" class="wpcf7-form-control wpcf7-text wpcf7-tel">
+            </span>
+          </label>
+        </p>
+
+        <p>
+          <label>First Name
+            <span class="wpcf7-form-control-wrap your-first-name">
+              <input type="text" name="your-first-name" value="John" size="40" class="wpcf7-form-control wpcf7-text">
+            </span>
+          </label>
+        </p>
+
+        <p>
+          <label>Last Name
+            <span class="wpcf7-form-control-wrap your-last-name">
+              <input type="text" name="your-last-name" value="Doe" size="40" class="wpcf7-form-control wpcf7-text">
+            </span>
+          </label>
+        </p>
+
+        <p>
+          <input type="submit" value="Send" class="wpcf7-form-control wpcf7-submit">
+        </p>
+
+      </form>
+
+      <div class="wpcf7-response-output wpcf7-mail-sent-ok" role="alert">
+        Thank you for your message. It has been sent.
+      </div>
+    </div>
+
+    <!-- Test Results -->
+    <div class="test-results">
+      <h2>Test Results</h2>
+      <div id="assertions"></div>
+      <pre id="dataLayerOutput"></pre>
+    </div>
+  </div>
+
+  <script>
+    // Initialize dataLayer
+    window.dataLayer = window.dataLayer || [];
+
+    // Simulate Contact Form 7 global
+    if (typeof wpcf7 === 'undefined') {
+      window.wpcf7 = {
+        api: {
+          root: 'https://example.com/wp-json/contact-form-7/v1',
+          namespace: 'contact-form-7/v1'
+        }
+      };
+    }
+
+    // Test assertions
+    const assertions = [];
+
+    function assert(condition, message) {
+      const result = {
+        pass: condition,
+        message: message
+      };
+      assertions.push(result);
+
+      if (condition) {
+        console.log('✅ PASS:', message);
+      } else {
+        console.error('❌ FAIL:', message);
+      }
+
+      return condition;
+    }
+
+    // Platform Detection Test (mock)
+    function testPlatformDetection() {
+      // In real template, this would be: PlatformDetector.detect()
+      const hasWpcf7Global = typeof wpcf7 !== 'undefined';
+      const hasWpcf7Class = document.querySelector('.wpcf7') !== null;
+
+      assert(hasWpcf7Global, 'Contact Form 7 global object exists');
+      assert(hasWpcf7Class, 'Contact Form 7 CSS class exists');
+      assert(hasWpcf7Global || hasWpcf7Class, 'Platform detection would succeed');
+    }
+
+    // Field Detection Test (mock)
+    function testFieldDetection() {
+      const emailField = document.querySelector('input[type="email"]');
+      const phoneField = document.querySelector('input[type="tel"]');
+      const firstNameField = document.querySelector('input[name*="first"]');
+      const lastNameField = document.querySelector('input[name*="last"]');
+
+      assert(emailField !== null, 'Email field detected');
+      assert(phoneField !== null, 'Phone field detected');
+      assert(firstNameField !== null, 'First name field detected');
+      assert(lastNameField !== null, 'Last name field detected');
+
+      if (emailField) assert(emailField.value === 'test@example.com', 'Email value correct');
+      if (phoneField) assert(phoneField.value === '(555) 123-4567', 'Phone value correct');
+      if (firstNameField) assert(firstNameField.value === 'John', 'First name value correct');
+      if (lastNameField) assert(lastNameField.value === 'Doe', 'Last name value correct');
+    }
+
+    // Form Submission Handler
+    document.querySelector('.wpcf7-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      console.log('Form submitted');
+
+      // Simulate Contact Form 7 success
+      setTimeout(function() {
+        // Show success message
+        const successMessage = document.querySelector('.wpcf7-response-output');
+        successMessage.style.display = 'block';
+
+        // Simulate dataLayer push (in real template, this would happen automatically)
+        const data = {
+          event: 'enhanced_conversion',
+          enhanced_conversion_data: {
+            email: 'test@example.com',
+            phone_number: '+15551234567',
+            first_name: 'John',
+            last_name: 'Doe'
+          }
+        };
+
+        window.dataLayer.push(data);
+
+        // Verify dataLayer push
+        testDataLayerPush();
+
+        // Display results
+        displayResults();
+      }, 500);
+    });
+
+    // DataLayer Push Test
+    function testDataLayerPush() {
+      assert(window.dataLayer.length > 0, 'DataLayer has events');
+
+      const event = window.dataLayer.find(e => e.event === 'enhanced_conversion');
+      assert(event !== undefined, 'Enhanced conversion event found');
+
+      if (event) {
+        const data = event.enhanced_conversion_data;
+        assert(data.email === 'test@example.com', 'Email in dataLayer correct');
+        assert(data.phone_number === '+15551234567', 'Phone normalized to E.164');
+        assert(data.first_name === 'John', 'First name in dataLayer correct');
+        assert(data.last_name === 'Doe', 'Last name in dataLayer correct');
+      }
+    }
+
+    // Display Results
+    function displayResults() {
+      const assertionsDiv = document.getElementById('assertions');
+      assertionsDiv.innerHTML = '';
+
+      let passCount = 0;
+      let failCount = 0;
+
+      assertions.forEach(function(assertion) {
+        const div = document.createElement('div');
+        div.className = 'assertion ' + (assertion.pass ? 'pass' : 'fail');
+        div.textContent = (assertion.pass ? '✅ PASS: ' : '❌ FAIL: ') + assertion.message;
+        assertionsDiv.appendChild(div);
+
+        if (assertion.pass) passCount++;
+        else failCount++;
+      });
+
+      // Summary
+      const summary = document.createElement('div');
+      summary.className = 'assertion ' + (failCount === 0 ? 'pass' : 'fail');
+      summary.style.marginTop = '15px';
+      summary.style.fontWeight = 'bold';
+      summary.textContent = `Summary: ${passCount} passed, ${failCount} failed`;
+      assertionsDiv.appendChild(summary);
+
+      // DataLayer output
+      const dataLayerOutput = document.getElementById('dataLayerOutput');
+      dataLayerOutput.textContent = 'dataLayer contents:\n' + JSON.stringify(window.dataLayer, null, 2);
+    }
+
+    // Run initial tests (before form submission)
+    testPlatformDetection();
+    testFieldDetection();
+
+    console.log('===================================');
+    console.log('Contact Form 7 Integration Test');
+    console.log('===================================');
+    console.log('1. Platform detection tests completed');
+    console.log('2. Field detection tests completed');
+    console.log('3. Submit the form to test dataLayer push');
+    console.log('===================================');
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Contact Form 7 Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .wpcf7 {
+            margin-top: 20px;
+        }
+        .wpcf7-form p {
+            margin-bottom: 15px;
+        }
+        .wpcf7-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .wpcf7-form input,
+        .wpcf7-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .wpcf7-form textarea {
+            min-height: 100px;
+        }
+        .wpcf7-submit {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .wpcf7-submit:hover {
+            background: #45a049;
+        }
+        .wpcf7-mail-sent-ok {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        .wpcf7-mail-sent-ok.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Contact Form 7 Test</h1>
+        <p>This simulates a Contact Form 7 form for testing the Enhanced Conversion Tracking template.</p>
+
+        <div class="wpcf7" id="wpcf7-f123-p456-o1">
+            <form class="wpcf7-form" method="post">
+                <p>
+                    <label>Your Email (required)<br>
+                        <span class="wpcf7-form-control-wrap your-email">
+                            <input type="email" name="your-email" size="40" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" aria-required="true" aria-invalid="false">
+                        </span>
+                    </label>
+                </p>
+
+                <p>
+                    <label>Your Phone<br>
+                        <span class="wpcf7-form-control-wrap your-phone">
+                            <input type="tel" name="your-phone" size="40" class="wpcf7-form-control wpcf7-text wpcf7-tel">
+                        </span>
+                    </label>
+                </p>
+
+                <p>
+                    <label>Your Name<br>
+                        <span class="wpcf7-form-control-wrap your-name">
+                            <input type="text" name="your-name" size="40" class="wpcf7-form-control wpcf7-text">
+                        </span>
+                    </label>
+                </p>
+
+                <p>
+                    <label>Your Message<br>
+                        <span class="wpcf7-form-control-wrap your-message">
+                            <textarea name="your-message" cols="40" rows="10" class="wpcf7-form-control wpcf7-textarea"></textarea>
+                        </span>
+                    </label>
+                </p>
+
+                <p>
+                    <input type="submit" value="Send" class="wpcf7-form-control wpcf7-submit">
+                </p>
+            </form>
+
+            <div class="wpcf7-mail-sent-ok" role="alert">
+                Thank you for your message. It has been sent.
+            </div>
+        </div>
+    </div>
+
+    <!-- Simulate Contact Form 7 global object -->
+    <script>
+        window.wpcf7 = {
+            api: {
+                settings: {
+                    rest_route: '/contact-form-7/v1/'
+                }
+            }
+        };
+
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+    </script>
+
+    <!-- Test Form Handler -->
+    <script>
+        const form = document.querySelector('.wpcf7-form');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = {
+                email: form.querySelector('[name="your-email"]').value,
+                phone: form.querySelector('[name="your-phone"]').value,
+                name: form.querySelector('[name="your-name"]').value
+            };
+
+            console.log('CF7 Form Data:', formData);
+
+            // Simulate CF7 AJAX submission
+            setTimeout(function() {
+                // Show success message
+                document.querySelector('.wpcf7-mail-sent-ok').classList.add('show');
+
+                // Trigger CF7 success event
+                const event = new CustomEvent('wpcf7mailsent', {
+                    detail: {
+                        contactFormId: 123,
+                        status: 'mail_sent',
+                        inputs: formData
+                    }
+                });
+                document.dispatchEvent(event);
+
+                console.log('CF7 wpcf7mailsent event fired');
+            }, 800);
+        });
+    </script>
+</body>
+</html>

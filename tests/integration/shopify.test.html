@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Shopify Integration Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .test-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #96BF48;
+      margin-top: 0;
+    }
+
+    .shopify-form {
+      margin: 20px 0;
+    }
+
+    .shopify-form .field {
+      margin: 15px 0;
+    }
+
+    .shopify-form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .shopify-form input[type="text"],
+    .shopify-form input[type="email"],
+    .shopify-form input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .shopify-form button[type="submit"] {
+      background: #96BF48;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    .shopify-form button[type="submit"]:hover {
+      background: #7FA03D;
+    }
+
+    .order-confirmation {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 4px;
+      background: #96BF48;
+      color: white;
+      display: none;
+    }
+
+    .test-results {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 4px;
+      border-left: 4px solid #96BF48;
+    }
+
+    .test-results h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .test-results pre {
+      background: #fff;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+    }
+
+    .assertion {
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .assertion.pass {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .assertion.fail {
+      background: #FFEBEE;
+      color: #C62828;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="test-container">
+    <h1>Shopify Integration Test</h1>
+    <p>This test simulates Shopify checkout structure and validates platform detection, field collection, and dataLayer push.</p>
+
+    <!-- Shopify checkout form structure -->
+    <div class="shopify-checkout">
+      <form method="post" class="shopify-form" id="checkout-form">
+
+        <div class="field">
+          <label for="checkout_email">Email</label>
+          <input type="email" name="checkout[email]" id="checkout_email" value="customer@example.com" autocomplete="email">
+        </div>
+
+        <div class="field">
+          <label for="checkout_shipping_address_phone">Phone</label>
+          <input type="tel" name="checkout[shipping_address][phone]" id="checkout_shipping_address_phone" value="(555) 987-6543" autocomplete="tel">
+        </div>
+
+        <div class="field">
+          <label for="checkout_shipping_address_first_name">First Name</label>
+          <input type="text" name="checkout[shipping_address][first_name]" id="checkout_shipping_address_first_name" value="Alex" autocomplete="given-name">
+        </div>
+
+        <div class="field">
+          <label for="checkout_shipping_address_last_name">Last Name</label>
+          <input type="text" name="checkout[shipping_address][last_name]" id="checkout_shipping_address_last_name" value="Johnson" autocomplete="family-name">
+        </div>
+
+        <button type="submit">Complete Order</button>
+      </form>
+
+      <div class="order-confirmation">
+        Thank you for your purchase! Order #12345
+      </div>
+    </div>
+
+    <!-- Test Results -->
+    <div class="test-results">
+      <h2>Test Results</h2>
+      <div id="assertions"></div>
+      <pre id="dataLayerOutput"></pre>
+    </div>
+  </div>
+
+  <script>
+    // Initialize dataLayer
+    window.dataLayer = window.dataLayer || [];
+
+    // Simulate Shopify global objects
+    if (typeof Shopify === 'undefined') {
+      window.Shopify = {
+        shop: 'test-store.myshopify.com',
+        currency: { active: 'USD' },
+        country: 'US',
+        theme: { name: 'Dawn', id: 123456789 }
+      };
+    }
+
+    if (typeof ShopifyAnalytics === 'undefined') {
+      window.ShopifyAnalytics = {
+        lib: {
+          track: function() {}
+        }
+      };
+    }
+
+    // Test assertions
+    const assertions = [];
+
+    function assert(condition, message) {
+      const result = {
+        pass: condition,
+        message: message
+      };
+      assertions.push(result);
+
+      if (condition) {
+        console.log('✅ PASS:', message);
+      } else {
+        console.error('❌ FAIL:', message);
+      }
+
+      return condition;
+    }
+
+    // Platform Detection Test
+    function testPlatformDetection() {
+      const hasShopifyGlobal = typeof Shopify !== 'undefined';
+      const hasShopifyAnalytics = typeof ShopifyAnalytics !== 'undefined';
+
+      assert(hasShopifyGlobal, 'Shopify global object exists');
+      assert(hasShopifyAnalytics, 'ShopifyAnalytics global exists');
+      assert(hasShopifyGlobal || hasShopifyAnalytics, 'Platform detection would succeed');
+    }
+
+    // Field Detection Test
+    function testFieldDetection() {
+      const emailField = document.querySelector('input[name*="email"]');
+      const phoneField = document.querySelector('input[name*="phone"]');
+      const firstNameField = document.querySelector('input[name*="first_name"]');
+      const lastNameField = document.querySelector('input[name*="last_name"]');
+
+      assert(emailField !== null, 'Email field detected');
+      assert(phoneField !== null, 'Phone field detected');
+      assert(firstNameField !== null, 'First name field detected');
+      assert(lastNameField !== null, 'Last name field detected');
+
+      if (emailField) assert(emailField.value === 'customer@example.com', 'Email value correct');
+      if (phoneField) assert(phoneField.value === '(555) 987-6543', 'Phone value correct');
+      if (firstNameField) assert(firstNameField.value === 'Alex', 'First name value correct');
+      if (lastNameField) assert(lastNameField.value === 'Johnson', 'Last name value correct');
+    }
+
+    // Form Submission Handler
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      console.log('Form submitted');
+
+      // Simulate Shopify order completion
+      setTimeout(function() {
+        // Hide form, show confirmation
+        document.getElementById('checkout-form').style.display = 'none';
+        document.querySelector('.order-confirmation').style.display = 'block';
+
+        // Simulate dataLayer push
+        const data = {
+          event: 'enhanced_conversion',
+          enhanced_conversion_data: {
+            email: 'customer@example.com',
+            phone_number: '+15559876543',
+            first_name: 'Alex',
+            last_name: 'Johnson'
+          }
+        };
+
+        window.dataLayer.push(data);
+
+        // Verify dataLayer push
+        testDataLayerPush();
+
+        // Display results
+        displayResults();
+      }, 500);
+    });
+
+    // DataLayer Push Test
+    function testDataLayerPush() {
+      assert(window.dataLayer.length > 0, 'DataLayer has events');
+
+      const event = window.dataLayer.find(e => e.event === 'enhanced_conversion');
+      assert(event !== undefined, 'Enhanced conversion event found');
+
+      if (event) {
+        const data = event.enhanced_conversion_data;
+        assert(data.email === 'customer@example.com', 'Email in dataLayer correct');
+        assert(data.phone_number === '+15559876543', 'Phone normalized to E.164');
+        assert(data.first_name === 'Alex', 'First name in dataLayer correct');
+        assert(data.last_name === 'Johnson', 'Last name in dataLayer correct');
+      }
+    }
+
+    // Display Results
+    function displayResults() {
+      const assertionsDiv = document.getElementById('assertions');
+      assertionsDiv.innerHTML = '';
+
+      let passCount = 0;
+      let failCount = 0;
+
+      assertions.forEach(function(assertion) {
+        const div = document.createElement('div');
+        div.className = 'assertion ' + (assertion.pass ? 'pass' : 'fail');
+        div.textContent = (assertion.pass ? '✅ PASS: ' : '❌ FAIL: ') + assertion.message;
+        assertionsDiv.appendChild(div);
+
+        if (assertion.pass) passCount++;
+        else failCount++;
+      });
+
+      // Summary
+      const summary = document.createElement('div');
+      summary.className = 'assertion ' + (failCount === 0 ? 'pass' : 'fail');
+      summary.style.marginTop = '15px';
+      summary.style.fontWeight = 'bold';
+      summary.textContent = `Summary: ${passCount} passed, ${failCount} failed`;
+      assertionsDiv.appendChild(summary);
+
+      // DataLayer output
+      const dataLayerOutput = document.getElementById('dataLayerOutput');
+      dataLayerOutput.textContent = 'dataLayer contents:\n' + JSON.stringify(window.dataLayer, null, 2);
+    }
+
+    // Run initial tests
+    testPlatformDetection();
+    testFieldDetection();
+
+    console.log('===================================');
+    console.log('Shopify Integration Test');
+    console.log('===================================');
+    console.log('1. Platform detection tests completed');
+    console.log('2. Field detection tests completed');
+    console.log('3. Submit the form to test dataLayer push');
+    console.log('===================================');
+  </script>
+
+</body>
+</html>

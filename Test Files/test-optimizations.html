@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimization Testing</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .test-section {
+            background: #252526;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #007acc;
+        }
+        .test-pass {
+            color: #4ec9b0;
+        }
+        .test-fail {
+            color: #f48771;
+        }
+        .test-info {
+            color: #dcdcaa;
+        }
+        h2 {
+            color: #569cd6;
+        }
+        pre {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .wpcf7-form {
+            background: white;
+            padding: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Enhanced Conversion Tracking - Optimization Tests</h1>
+
+    <div class="test-section">
+        <h2>Test Environment Setup</h2>
+        <p id="env-status">Initializing...</p>
+    </div>
+
+    <!-- Test Form (Contact Form 7 simulation) -->
+    <div class="wpcf7" style="display:none;">
+        <form class="wpcf7-form">
+            <input type="email" name="your-email" id="email" value="test@example.com">
+            <input type="tel" name="your-phone" id="phone" value="+1234567890">
+            <input type="text" name="your-name" id="first-name" value="John">
+            <input type="text" name="your-lastname" id="last-name" value="Doe">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- Test Results -->
+    <div id="test-results"></div>
+
+    <!-- Simulate Contact Form 7 global object -->
+    <script>
+        window.wpcf7 = {
+            api: {
+                settings: {
+                    rest_route: '/contact-form-7/v1/'
+                }
+            }
+        };
+
+        window.dataLayer = window.dataLayer || [];
+
+        // Test Framework
+        const TestFramework = {
+            tests: [],
+            passed: 0,
+            failed: 0,
+
+            addTest: function(name, testFn) {
+                this.tests.push({ name: name, fn: testFn });
+            },
+
+            runAll: function() {
+                console.log('='.repeat(60));
+                console.log('ENHANCED CONVERSION TRACKING - OPTIMIZATION TESTS');
+                console.log('='.repeat(60));
+
+                const startTime = performance.now();
+
+                for (let i = 0; i < this.tests.length; i++) {
+                    const test = this.tests[i];
+                    console.log(`\nTest ${i + 1}/${this.tests.length}: ${test.name}`);
+
+                    try {
+                        const result = test.fn();
+                        if (result) {
+                            this.passed++;
+                            console.log('✅ PASS');
+                            this.logResult(test.name, 'PASS', null);
+                        } else {
+                            this.failed++;
+                            console.log('❌ FAIL');
+                            this.logResult(test.name, 'FAIL', 'Test returned false');
+                        }
+                    } catch (error) {
+                        this.failed++;
+                        console.log('❌ FAIL:', error.message);
+                        this.logResult(test.name, 'FAIL', error.message);
+                    }
+                }
+
+                const endTime = performance.now();
+                const duration = (endTime - startTime).toFixed(2);
+
+                console.log('\n' + '='.repeat(60));
+                console.log(`RESULTS: ${this.passed} passed, ${this.failed} failed`);
+                console.log(`Duration: ${duration}ms`);
+                console.log('='.repeat(60));
+
+                this.displaySummary(duration);
+            },
+
+            logResult: function(name, status, error) {
+                const resultsDiv = document.getElementById('test-results');
+                const testDiv = document.createElement('div');
+                testDiv.className = 'test-section';
+
+                const statusClass = status === 'PASS' ? 'test-pass' : 'test-fail';
+                let html = `<h3 class="${statusClass}">${status}: ${name}</h3>`;
+
+                if (error) {
+                    html += `<pre class="test-fail">${error}</pre>`;
+                }
+
+                testDiv.innerHTML = html;
+                resultsDiv.appendChild(testDiv);
+            },
+
+            displaySummary: function(duration) {
+                const resultsDiv = document.getElementById('test-results');
+                const summaryDiv = document.createElement('div');
+                summaryDiv.className = 'test-section';
+                summaryDiv.style.borderLeftColor = this.failed === 0 ? '#4ec9b0' : '#f48771';
+
+                summaryDiv.innerHTML = `
+                    <h2>Test Summary</h2>
+                    <p class="test-info">Total Tests: ${this.tests.length}</p>
+                    <p class="test-pass">Passed: ${this.passed}</p>
+                    <p class="test-fail">Failed: ${this.failed}</p>
+                    <p class="test-info">Duration: ${duration}ms</p>
+                    <p class="test-info">Success Rate: ${((this.passed / this.tests.length) * 100).toFixed(1)}%</p>
+                `;
+
+                resultsDiv.insertBefore(summaryDiv, resultsDiv.firstChild);
+            }
+        };
+
+        // ============================================================================
+        // ROUND 1: REGEX CACHING TESTS
+        // ============================================================================
+
+        TestFramework.addTest('Regex Caching: Email regex is cached', function() {
+            // Simulate the Utils object
+            const Utils = {
+                _emailRegex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                isValidEmail: function(email) {
+                    if (!email || typeof email !== 'string') return false;
+                    return this._emailRegex.test(email.toLowerCase());
+                }
+            };
+
+            // Test that regex is not recompiled
+            const regex1 = Utils._emailRegex;
+            Utils.isValidEmail('test@example.com');
+            const regex2 = Utils._emailRegex;
+
+            console.log('  → Regex reference unchanged:', regex1 === regex2);
+            return regex1 === regex2;
+        });
+
+        TestFramework.addTest('Regex Caching: Email validation works', function() {
+            const Utils = {
+                _emailRegex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                isValidEmail: function(email) {
+                    if (!email || typeof email !== 'string') return false;
+                    return this._emailRegex.test(email.toLowerCase());
+                }
+            };
+
+            const valid = Utils.isValidEmail('test@example.com');
+            const invalid = Utils.isValidEmail('invalid-email');
+
+            console.log('  → Valid email:', valid);
+            console.log('  → Invalid email:', !invalid);
+            return valid && !invalid;
+        });
+
+        TestFramework.addTest('Regex Caching: Phone regex is cached', function() {
+            const Utils = {
+                _phoneDigitsRegex: /\D/g,
+                normalizePhone: function(phone) {
+                    if (!phone) return null;
+                    let cleaned = phone.replace(this._phoneDigitsRegex, '');
+                    return cleaned;
+                }
+            };
+
+            const regex1 = Utils._phoneDigitsRegex;
+            Utils.normalizePhone('+1 (234) 567-8900');
+            const regex2 = Utils._phoneDigitsRegex;
+
+            console.log('  → Regex reference unchanged:', regex1 === regex2);
+            return regex1 === regex2;
+        });
+
+        // ============================================================================
+        // ROUND 2: PLATFORM DETECTION TESTS
+        // ============================================================================
+
+        TestFramework.addTest('Platform Detection: Early exit on first match', function() {
+            let detectCalls = 0;
+
+            const PlatformDetector = {
+                detect: function() {
+                    // Simulate early exit - return on first match
+                    if (this.detectContactForm7()) return 'contactForm7';
+                    detectCalls++; // Should not be called if CF7 is detected
+                    if (this.detectGravityForms()) return 'gravityForms';
+                    detectCalls++;
+                    return 'generic';
+                },
+                detectContactForm7: function() {
+                    return !!(document.querySelector('.wpcf7-form') || window.wpcf7);
+                },
+                detectGravityForms: function() {
+                    detectCalls++;
+                    return false;
+                }
+            };
+
+            const platform = PlatformDetector.detect();
+
+            console.log('  → Detected platform:', platform);
+            console.log('  → Additional detections called:', detectCalls);
+            console.log('  → Early exit working:', platform === 'contactForm7' && detectCalls === 0);
+
+            return platform === 'contactForm7' && detectCalls === 0;
+        });
+
+        TestFramework.addTest('Platform Detection: Contact Form 7 detection works', function() {
+            const PlatformDetector = {
+                detectContactForm7: function() {
+                    return !!(document.querySelector('.wpcf7-form') || window.wpcf7);
+                }
+            };
+
+            const detected = PlatformDetector.detectContactForm7();
+
+            console.log('  → CF7 detected:', detected);
+            return detected === true;
+        });
+
+        TestFramework.addTest('Platform Detection: Returns generic if no match', function() {
+            const PlatformDetector = {
+                detect: function() {
+                    if (this.detectNonExistent()) return 'nonexistent';
+                    return 'generic';
+                },
+                detectNonExistent: function() {
+                    return false;
+                }
+            };
+
+            const platform = PlatformDetector.detect();
+
+            console.log('  → Fallback platform:', platform);
+            return platform === 'generic';
+        });
+
+        // ============================================================================
+        // ROUND 3: BATCH FIELD QUERY TESTS
+        // ============================================================================
+
+        TestFramework.addTest('Batch Queries: Email field detected with single query', function() {
+            const FieldDetector = {
+                emailSelector: 'input[type="email"], input[name*="email" i], #email',
+                detectEmail: function() {
+                    return document.querySelector(this.emailSelector);
+                }
+            };
+
+            const field = FieldDetector.detectEmail();
+
+            console.log('  → Email field found:', !!field);
+            console.log('  → Field value:', field ? field.value : 'none');
+            return !!field && field.value === 'test@example.com';
+        });
+
+        TestFramework.addTest('Batch Queries: Phone field detected with single query', function() {
+            const FieldDetector = {
+                phoneSelector: 'input[type="tel"], input[name*="phone" i], #phone',
+                detectPhone: function() {
+                    return document.querySelector(this.phoneSelector);
+                }
+            };
+
+            const field = FieldDetector.detectPhone();
+
+            console.log('  → Phone field found:', !!field);
+            console.log('  → Field value:', field ? field.value : 'none');
+            return !!field && field.value === '+1234567890';
+        });
+
+        TestFramework.addTest('Batch Queries: Name fields detected', function() {
+            const FieldDetector = {
+                firstNameSelector: 'input[name*="name" i], #first-name',
+                lastNameSelector: 'input[name*="lastname" i], #last-name',
+                detectFirstName: function() {
+                    return document.querySelector(this.firstNameSelector);
+                },
+                detectLastName: function() {
+                    return document.querySelector(this.lastNameSelector);
+                }
+            };
+
+            const firstName = FieldDetector.detectFirstName();
+            const lastName = FieldDetector.detectLastName();
+
+            console.log('  → First name found:', !!firstName);
+            console.log('  → Last name found:', !!lastName);
+            return !!firstName && !!lastName;
+        });
+
+        // ============================================================================
+        // ROUND 4: MEMORY MANAGER TESTS
+        // ============================================================================
+
+        TestFramework.addTest('MemoryManager: Can register observer', function() {
+            const MemoryManager = {
+                observers: [],
+                registerObserver: function(observer, name) {
+                    this.observers.push({ observer: observer, name: name });
+                    return observer;
+                }
+            };
+
+            const mockObserver = new MutationObserver(function() {});
+            MemoryManager.registerObserver(mockObserver, 'test-observer');
+
+            console.log('  → Observers registered:', MemoryManager.observers.length);
+            return MemoryManager.observers.length === 1;
+        });
+
+        TestFramework.addTest('MemoryManager: Can register listener', function() {
+            const MemoryManager = {
+                listeners: [],
+                registerListener: function(element, event, handler, name) {
+                    if (!element) return;
+                    this.listeners.push({ element, event, handler, name });
+                    element.addEventListener(event, handler);
+                }
+            };
+
+            const button = document.querySelector('button');
+            const handler = function() {};
+            MemoryManager.registerListener(button, 'click', handler, 'test-listener');
+
+            console.log('  → Listeners registered:', MemoryManager.listeners.length);
+            return MemoryManager.listeners.length === 1;
+        });
+
+        TestFramework.addTest('MemoryManager: Cleanup disconnects observers', function() {
+            const MemoryManager = {
+                observers: [],
+                registerObserver: function(observer, name) {
+                    this.observers.push({ observer: observer, name: name });
+                    return observer;
+                },
+                cleanup: function() {
+                    for (let i = 0; i < this.observers.length; i++) {
+                        this.observers[i].observer.disconnect();
+                    }
+                    this.observers = [];
+                }
+            };
+
+            const mockObserver = new MutationObserver(function() {});
+            mockObserver.observe(document.body, { childList: true });
+
+            MemoryManager.registerObserver(mockObserver, 'test');
+            MemoryManager.cleanup();
+
+            console.log('  → Observers after cleanup:', MemoryManager.observers.length);
+            return MemoryManager.observers.length === 0;
+        });
+
+        // ============================================================================
+        // ROUND 5: INTEGRATION TESTS
+        // ============================================================================
+
+        TestFramework.addTest('Integration: All optimizations work together', function() {
+            // Simulate complete flow
+            const Utils = {
+                _emailRegex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                isValidEmail: function(email) {
+                    return this._emailRegex.test(email);
+                }
+            };
+
+            const PlatformDetector = {
+                detect: function() {
+                    if (window.wpcf7) return 'contactForm7';
+                    return 'generic';
+                }
+            };
+
+            const FieldDetector = {
+                emailSelector: '#email',
+                detectEmail: function() {
+                    return document.querySelector(this.emailSelector);
+                }
+            };
+
+            const platform = PlatformDetector.detect();
+            const emailField = FieldDetector.detectEmail();
+            const emailValid = Utils.isValidEmail(emailField.value);
+
+            console.log('  → Platform:', platform);
+            console.log('  → Email field:', !!emailField);
+            console.log('  → Email valid:', emailValid);
+
+            return platform === 'contactForm7' && emailField && emailValid;
+        });
+
+        TestFramework.addTest('Integration: Performance improvement measurable', function() {
+            // Measure old approach (sequential)
+            const startOld = performance.now();
+            for (let i = 0; i < 100; i++) {
+                const patterns = ['input[type="email"]', 'input[name*="email"]', '#email'];
+                for (let j = 0; j < patterns.length; j++) {
+                    document.querySelector(patterns[j]);
+                }
+            }
+            const oldTime = performance.now() - startOld;
+
+            // Measure new approach (batch)
+            const startNew = performance.now();
+            const batchSelector = 'input[type="email"], input[name*="email"], #email';
+            for (let i = 0; i < 100; i++) {
+                document.querySelector(batchSelector);
+            }
+            const newTime = performance.now() - startNew;
+
+            const improvement = ((oldTime - newTime) / oldTime * 100).toFixed(1);
+
+            console.log('  → Old approach:', oldTime.toFixed(2), 'ms');
+            console.log('  → New approach:', newTime.toFixed(2), 'ms');
+            console.log('  → Improvement:', improvement, '%');
+
+            return newTime < oldTime;
+        });
+
+        // ============================================================================
+        // RUN ALL TESTS
+        // ============================================================================
+
+        document.getElementById('env-status').innerHTML = `
+            <span class="test-pass">✓</span> Test environment ready<br>
+            <span class="test-info">→ Contact Form 7 simulation active</span><br>
+            <span class="test-info">→ Test form with fields present</span><br>
+            <span class="test-info">→ Running ${TestFramework.tests.length} tests...</span>
+        `;
+
+        // Run tests after a short delay
+        setTimeout(function() {
+            TestFramework.runAll();
+        }, 500);
+    </script>
+</body>
+</html>

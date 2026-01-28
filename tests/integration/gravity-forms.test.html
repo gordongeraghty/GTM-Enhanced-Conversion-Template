@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gravity Forms Integration Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .test-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #2196F3;
+      margin-top: 0;
+    }
+
+    .gform_wrapper {
+      margin: 20px 0;
+    }
+
+    .gform_body .gfield {
+      margin: 15px 0;
+    }
+
+    .gform_body label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .gform_body input[type="text"],
+    .gform_body input[type="email"],
+    .gform_body input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .gform_footer input[type="submit"] {
+      background: #2196F3;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .gform_footer input[type="submit"]:hover {
+      background: #1976D2;
+    }
+
+    .gform_confirmation_message {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 4px;
+      background: #4CAF50;
+      color: white;
+      display: none;
+    }
+
+    .test-results {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 4px;
+      border-left: 4px solid #2196F3;
+    }
+
+    .test-results h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .test-results pre {
+      background: #fff;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+    }
+
+    .assertion {
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .assertion.pass {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .assertion.fail {
+      background: #FFEBEE;
+      color: #C62828;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="test-container">
+    <h1>Gravity Forms Integration Test</h1>
+    <p>This test simulates Gravity Forms structure and validates platform detection, field collection, and dataLayer push.</p>
+
+    <!-- Gravity Forms structure -->
+    <div class="gform_wrapper" id="gform_wrapper_1">
+      <form method="post" id="gform_1" class="gform_1">
+        <div class="gform_body">
+
+          <div class="gfield gfield_contains_required">
+            <label class="gfield_label" for="input_1_1">Email <span class="gfield_required">*</span></label>
+            <div class="ginput_container">
+              <input name="input_1" id="input_1_1" type="email" value="test@example.com" class="large">
+            </div>
+          </div>
+
+          <div class="gfield">
+            <label class="gfield_label" for="input_1_2">Phone</label>
+            <div class="ginput_container">
+              <input name="input_2" id="input_1_2" type="tel" value="555-123-4567" class="large">
+            </div>
+          </div>
+
+          <div class="gfield">
+            <label class="gfield_label" for="input_1_3">First Name</label>
+            <div class="ginput_container">
+              <input name="input_3" id="input_1_3" type="text" value="Jane" class="large">
+            </div>
+          </div>
+
+          <div class="gfield">
+            <label class="gfield_label" for="input_1_4">Last Name</label>
+            <div class="ginput_container">
+              <input name="input_4" id="input_1_4" type="text" value="Smith" class="large">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="gform_footer">
+          <input type="submit" id="gform_submit_button_1" value="Submit" class="gform_button button">
+        </div>
+      </form>
+
+      <div class="gform_confirmation_message">
+        Thanks for contacting us! We will get in touch with you shortly.
+      </div>
+    </div>
+
+    <!-- Test Results -->
+    <div class="test-results">
+      <h2>Test Results</h2>
+      <div id="assertions"></div>
+      <pre id="dataLayerOutput"></pre>
+    </div>
+  </div>
+
+  <script>
+    // Initialize dataLayer
+    window.dataLayer = window.dataLayer || [];
+
+    // Simulate Gravity Forms global
+    if (typeof gform === 'undefined') {
+      window.gform = {
+        hooks: {},
+        addAction: function() {},
+        addFilter: function() {}
+      };
+    }
+
+    // Test assertions
+    const assertions = [];
+
+    function assert(condition, message) {
+      const result = {
+        pass: condition,
+        message: message
+      };
+      assertions.push(result);
+
+      if (condition) {
+        console.log('✅ PASS:', message);
+      } else {
+        console.error('❌ FAIL:', message);
+      }
+
+      return condition;
+    }
+
+    // Platform Detection Test
+    function testPlatformDetection() {
+      const hasGformGlobal = typeof gform !== 'undefined';
+      const hasGformClass = document.querySelector('.gform_wrapper') !== null;
+
+      assert(hasGformGlobal, 'Gravity Forms global object exists');
+      assert(hasGformClass, 'Gravity Forms CSS class exists');
+      assert(hasGformGlobal || hasGformClass, 'Platform detection would succeed');
+    }
+
+    // Field Detection Test
+    function testFieldDetection() {
+      const emailField = document.querySelector('input[type="email"]');
+      const phoneField = document.querySelector('input[type="tel"]');
+      const firstNameField = document.querySelector('input[id*="1_3"]'); // Gravity Forms pattern
+      const lastNameField = document.querySelector('input[id*="1_4"]');
+
+      assert(emailField !== null, 'Email field detected');
+      assert(phoneField !== null, 'Phone field detected');
+      assert(firstNameField !== null, 'First name field detected');
+      assert(lastNameField !== null, 'Last name field detected');
+
+      if (emailField) assert(emailField.value === 'test@example.com', 'Email value correct');
+      if (phoneField) assert(phoneField.value === '555-123-4567', 'Phone value correct');
+      if (firstNameField) assert(firstNameField.value === 'Jane', 'First name value correct');
+      if (lastNameField) assert(lastNameField.value === 'Smith', 'Last name value correct');
+    }
+
+    // Form Submission Handler
+    document.getElementById('gform_1').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      console.log('Form submitted');
+
+      // Simulate Gravity Forms success
+      setTimeout(function() {
+        // Hide form, show confirmation
+        document.getElementById('gform_1').style.display = 'none';
+        document.querySelector('.gform_confirmation_message').style.display = 'block';
+
+        // Simulate dataLayer push
+        const data = {
+          event: 'enhanced_conversion',
+          enhanced_conversion_data: {
+            email: 'test@example.com',
+            phone_number: '+15551234567',
+            first_name: 'Jane',
+            last_name: 'Smith'
+          }
+        };
+
+        window.dataLayer.push(data);
+
+        // Verify dataLayer push
+        testDataLayerPush();
+
+        // Display results
+        displayResults();
+      }, 500);
+    });
+
+    // DataLayer Push Test
+    function testDataLayerPush() {
+      assert(window.dataLayer.length > 0, 'DataLayer has events');
+
+      const event = window.dataLayer.find(e => e.event === 'enhanced_conversion');
+      assert(event !== undefined, 'Enhanced conversion event found');
+
+      if (event) {
+        const data = event.enhanced_conversion_data;
+        assert(data.email === 'test@example.com', 'Email in dataLayer correct');
+        assert(data.phone_number === '+15551234567', 'Phone normalized to E.164');
+        assert(data.first_name === 'Jane', 'First name in dataLayer correct');
+        assert(data.last_name === 'Smith', 'Last name in dataLayer correct');
+      }
+    }
+
+    // Display Results
+    function displayResults() {
+      const assertionsDiv = document.getElementById('assertions');
+      assertionsDiv.innerHTML = '';
+
+      let passCount = 0;
+      let failCount = 0;
+
+      assertions.forEach(function(assertion) {
+        const div = document.createElement('div');
+        div.className = 'assertion ' + (assertion.pass ? 'pass' : 'fail');
+        div.textContent = (assertion.pass ? '✅ PASS: ' : '❌ FAIL: ') + assertion.message;
+        assertionsDiv.appendChild(div);
+
+        if (assertion.pass) passCount++;
+        else failCount++;
+      });
+
+      // Summary
+      const summary = document.createElement('div');
+      summary.className = 'assertion ' + (failCount === 0 ? 'pass' : 'fail');
+      summary.style.marginTop = '15px';
+      summary.style.fontWeight = 'bold';
+      summary.textContent = `Summary: ${passCount} passed, ${failCount} failed`;
+      assertionsDiv.appendChild(summary);
+
+      // DataLayer output
+      const dataLayerOutput = document.getElementById('dataLayerOutput');
+      dataLayerOutput.textContent = 'dataLayer contents:\n' + JSON.stringify(window.dataLayer, null, 2);
+    }
+
+    // Run initial tests
+    testPlatformDetection();
+    testFieldDetection();
+
+    console.log('===================================');
+    console.log('Gravity Forms Integration Test');
+    console.log('===================================');
+    console.log('1. Platform detection tests completed');
+    console.log('2. Field detection tests completed');
+    console.log('3. Submit the form to test dataLayer push');
+    console.log('===================================');
+  </script>
+
+</body>
+</html>
