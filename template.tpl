@@ -1,32 +1,30 @@
-// Copyright 2026 Gordon Geraghty
+___TERMS_OF_SERVICE___
 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+By creating or modifying this file you agree to Google Tag Manager's Community
+Template Gallery Developer Terms of Service available at
+https://developers.google.com/tag-manager/gallery-tos (or such other URL as
+Google may provide), as modified from time to time.
 
-//     https://www.apache.org/licenses/LICENSE-2.0
-
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
 ___INFO___
 
 {
-  "type": "TAG",
-  "id": "cvt_temp_public_id",
-  "version": 2,
-  "securityGroups": [],
   "displayName": "Enhanced Conversion Tracking - Universal",
+  "description": "Universal Enhanced Conversion Tracking for Google Ads across 50+ platforms including e-commerce (Shopify, WooCommerce, Square), forms (Contact Form 7, Gravity Forms, Typeform), marketing automation (HubSpot, Mailchimp, Klaviyo, ActiveCampaign), booking (Calendly), surveys (SurveyMonkey), donations (Donorbox), and restaurants (Toast). Auto-detects platforms and captures user data for enhanced conversions.",
+  "securityGroups": [],
+  "id": "cvt_temp_public_id",
+  "categories": [
+    "CONVERSIONS",
+    "ANALYTICS",
+    "ADVERTISING"
+  ],
+  "type": "TAG",
+  "version": 1,
   "brand": {
-    "id": "brand_dummy",
-    "displayName": "Enhanced Conversion Tracking",
+    "displayName": "gordongeraghty",
+    "id": "github.com_gordongeraghty",
     "thumbnail": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
   },
-  "description": "Universal Enhanced Conversion Tracking for Google Ads across 50+ platforms including e-commerce (Shopify, WooCommerce, Square), forms (Contact Form 7, Gravity Forms, Typeform), marketing automation (HubSpot, Mailchimp, Klaviyo, ActiveCampaign), booking (Calendly), surveys (SurveyMonkey), donations (Donorbox), and restaurants (Toast). Auto-detects platforms and captures user data for enhanced conversions.",
-  "categories": ["CONVERSIONS", "ANALYTICS", "ADVERTISING"],
   "containerContexts": [
     "WEB"
   ]
