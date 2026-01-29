@@ -21,9 +21,9 @@ ___INFO___
   "type": "TAG",
   "version": 1,
   "brand": {
-    "displayName": "gordongeraghty",
-    "id": "github.com_gordongeraghty",
-    "thumbnail": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+    "thumbnail": "",
+    "displayName": "",
+    "id": "brand_dummy"
   },
   "containerContexts": [
     "WEB"
