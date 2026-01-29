@@ -15,7 +15,7 @@
 homepage: "https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template"
 documentation: "https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template/blob/main/TEMPLATE_GUIDE.md"
 versions:
-  - sha: 64ed2b49553460e1ed24822a10d1fe4014510cf5
+  - sha: d6f64b4fdba73eef7dcd441db627dd2b139de03e
     changeNotes: |
       v1.1.0 - Add 14 new platforms with test files
       New Platforms:
