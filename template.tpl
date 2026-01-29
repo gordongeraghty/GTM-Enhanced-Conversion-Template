@@ -599,9 +599,6 @@ const JSON = require('JSON');
 const encodeUriComponent = require('encodeUriComponent');
 const getType = require('getType');
 const Object = require('Object');
-const makeString = require('makeString');
-const getCookieValues = require('getCookieValues');
-const getUrl = require('getUrl');
 const addEventCallback = require('addEventCallback');
 
 // Get template parameters
