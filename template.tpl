@@ -21,8 +21,6 @@
     "WEB"
   ]
 }
-
-
 ___TEMPLATE_PARAMETERS___
 
 [
