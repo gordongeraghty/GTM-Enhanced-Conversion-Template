@@ -21,11 +21,10 @@ versions:
       New Platforms:
       - Marketing Automation: Mailchimp, ActiveCampaign, Klaviyo
       - Booking: Calendly
-      - E-commerce: Square Online, Magento, BigCommerce
+      - E-commerce: Square Online
       - Surveys: SurveyMonkey
       - Donations: Donorbox
       - Restaurant: Toast
-      - Forms: Typeform, JotForm, Webflow, Ninja Forms
       Updates:
       - Apache 2.0 license for GTM Gallery compliance
       - Comprehensive test files for all platforms

@@ -10,7 +10,7 @@ This template detects what platform you're using and configures itself. One temp
 
 ## What it does
 
-- Detects your platform automatically (works about 90% of the time)
+- Detects your platform automatically (works for most common platforms)
 - Captures email, phone, and name fields from forms
 - Validates and formats the data (emails lowercase, phones in E.164 format)
 - Pushes to dataLayer for your Google Ads conversion tag

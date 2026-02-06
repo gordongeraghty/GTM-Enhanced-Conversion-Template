@@ -135,7 +135,7 @@ If auto-detection doesn't work or you need specific control:
 
 **Auto-Detect Platform (Recommended)**
 - Automatically identifies which platform you're using
-- Works for 90%+ of use cases
+- Works for most common platforms
 - Minimal configuration required
 
 **Manual Configuration**

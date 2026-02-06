@@ -55,36 +55,29 @@ How do you know the form was submitted successfully?
 
 ### 4. Add the code
 
-In `template.tpl`:
+In `template.tpl`, the injected script is built as concatenated strings. Each module is a `var scriptXxx = '...';` variable.
 
-Add detection method (around line 900):
+**Add detection method** — find the `scriptPlatDetect` variable and add before the `generic` fallback:
 ```javascript
-detectMyPlatform: function() {
-  if (window.MyPlatformGlobal) return true;
-  if (document.querySelector('.myplatform-class')) return true;
-  return false;
-},
++ 'if(this.detectMyPlatform()){debug("Detected platform: myplatform");return"myplatform"}'
 ```
 
-Add to detect() method:
+Then add the detect function before the closing `};`:
 ```javascript
-if (this.detectMyPlatform()) return 'myplatform';
++ 'detectMyPlatform:function(){return!!(window.MyPlatformGlobal||document.querySelector(".myplatform-class"))},'
 ```
 
-Add platform config (around line 1000):
+**Add to detect() chain** — add an `if` line in the detect method (same pattern as existing platforms).
+
+**Add platform config** — find the `scriptPlatConfigs` variable and add before `generic`:
 ```javascript
-myplatform: {
-  fieldSelectors: {
-    email: '.myplatform-form input[type="email"]',
-    phone: '.myplatform-form input[type="tel"]',
-    firstName: '.myplatform-form input[name="first_name"]',
-    lastName: '.myplatform-form input[name="last_name"]'
-  },
-  triggers: {
-    successSelector: '.myplatform-success-message'
-  }
-},
++ 'myplatform:{conversionType:"lead",triggerMethod:"success_element",successSelector:".myplatform-success-message",formSelector:".myplatform-form"},'
 ```
+
+**Important escaping rules for string modules:**
+- Use double quotes `"` for JS strings inside the modules (outer wrapper is single-quoted)
+- Escape single quotes as `\'` when needed (e.g. CSS selectors with double-quoted attributes)
+- Escape regex backslashes: `\s` → `\\s`, `\D` → `\\D`
 
 ### 5. Create a test file
 

@@ -80,19 +80,21 @@ Initial public release.
 
 ### Platforms supported
 
-**E-commerce:** Shopify, WooCommerce, Magento, BigCommerce, Squarespace Commerce, Wix, PrestaShop, OpenCart, Volusion, 3dcart
+**E-commerce:** Shopify, WooCommerce, Magento, BigCommerce, Squarespace, Wix
 
-**WordPress forms:** Contact Form 7, Gravity Forms, WPForms, Ninja Forms, Elementor Forms, Fluent Forms, Formidable Forms, Forminator, WS Form, Happy Forms
+**WordPress forms:** Contact Form 7, Gravity Forms, WPForms, Ninja Forms, Elementor Forms
 
-**Standalone forms:** Typeform, JotForm, Google Forms, Formstack, Wufoo, Cognito Forms, FormAssembly, 123FormBuilder
+**Standalone forms:** Typeform, JotForm, Google Forms
 
-**Marketing automation:** HubSpot, Marketo, Pardot, ActiveCampaign, Mailchimp, Constant Contact, GetResponse, ConvertKit
+**Marketing:** HubSpot
 
-**Events:** Eventbrite, Humanitix, Ticketmaster, Calendly, Acuity Scheduling
+**Events:** Eventbrite, Humanitix
 
-**Learning:** Teachable, Thinkific, Kajabi, LearnDash
+**Learning:** Teachable, Thinkific
 
-**CMS:** Webflow, Drupal, Joomla, Ghost
+**CMS:** Webflow, Drupal
+
+**Fallback:** Generic HTML form detection
 
 ### Documentation
 
