@@ -2,7 +2,7 @@
 
 ## Reporting vulnerabilities
 
-If you find a security issue, don't post it publicly. Email security@empireamplify.com.au instead.
+If you find a security issue, don't post it publicly. Instead, [open a private security advisory](https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template/security/advisories/new) on GitHub.
 
 Include:
 - What the vulnerability is

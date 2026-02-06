@@ -17,10 +17,10 @@
     "testing",
     "enhanced-conversions"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": "Gordon Geraghty",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gordonkgeraghty/GTM-Enhanced-Conversion-Template.git"
+    "url": "https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template.git"
   }
 }

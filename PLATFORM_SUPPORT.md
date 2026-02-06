@@ -217,33 +217,6 @@ This document provides detailed information about each supported platform, inclu
 
 ---
 
-### Fluent Forms
-
-| Property | Value |
-|----------|-------|
-| **Auto-Detection** | ⚠️ Generic detection |
-| **Detection Method** | `.fluentform` class |
-| **Conversion Type** | Lead |
-| **Trigger Method** | Success Element |
-| **Form Selector** | `.fluentform` |
-| **Success Selector** | `.ff-message-success` |
-| **Tested** | ⚠️ Needs testing |
-
----
-
-### Formidable Forms
-
-| Property | Value |
-|----------|-------|
-| **Auto-Detection** | ⚠️ Generic detection |
-| **Detection Method** | `.frm_forms` class |
-| **Conversion Type** | Lead |
-| **Trigger Method** | Success Element |
-| **Success Selector** | `.frm_message` |
-| **Tested** | ⚠️ Needs testing |
-
----
-
 ## Standalone Form Builders
 
 ### Typeform
@@ -301,29 +274,6 @@ This document provides detailed information about each supported platform, inclu
 | **Fields Available** | Email, Phone, First Name, Last Name |
 | **Special Notes** | Works with HubSpot's native events |
 | **Tested** | ✅ Yes |
-
----
-
-### Marketo
-
-| Property | Value |
-|----------|-------|
-| **Auto-Detection** | ⚠️ Needs implementation |
-| **Detection Method** | Marketo form classes/IDs |
-| **Conversion Type** | Lead |
-| **Trigger Method** | Marketo form success callback |
-| **Tested** | ❌ Not yet implemented |
-
----
-
-### Pardot (Salesforce)
-
-| Property | Value |
-|----------|-------|
-| **Auto-Detection** | ⚠️ Needs implementation |
-| **Detection Method** | Pardot form handlers |
-| **Conversion Type** | Lead |
-| **Tested** | ❌ Not yet implemented |
 
 ---
 
@@ -685,4 +635,4 @@ Based on usage and requests, platforms are prioritized as:
 For platform-specific issues or questions:
 - Check the [Template Guide](./TEMPLATE_GUIDE.md)
 - Review [Troubleshooting](./TEMPLATE_GUIDE.md#troubleshooting) section
-- Open a [GitHub Issue](https://github.com/gordonkgeraghty/GTM-Enhanced-Conversion-Template/issues)
+- Open a [GitHub Issue](https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template/issues)

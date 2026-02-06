@@ -681,19 +681,6 @@ ___TEMPLATE_PARAMETERS___
         "help": "Delay before executing (useful for AJAX forms)"
       },
       {
-        "type": "TEXT",
-        "name": "maxRetries",
-        "displayName": "Max Retry Attempts",
-        "simpleValueType": true,
-        "valueValidators": [
-          {
-            "type": "NON_NEGATIVE_NUMBER"
-          }
-        ],
-        "defaultValue": "3",
-        "help": "Number of times to retry if fields not found"
-      },
-      {
         "type": "CHECKBOX",
         "name": "debugMode",
         "checkboxText": "Enable Debug Mode",
@@ -733,7 +720,6 @@ const enableValidation = data.enableDataValidation !== false;
 const normalizeData = data.normalizeData !== false;
 const checkConsent = data.checkConsent !== false;
 const executionDelay = data.executionDelay || 0;
-const maxRetries = data.maxRetries || 3;
 
 // Trigger settings
 const triggerMethod = data.triggerMethod || 'auto';
@@ -768,7 +754,6 @@ var config = JSON.stringify({
   normalizeData: normalizeData,
   checkConsent: checkConsent,
   executionDelay: executionDelay,
-  maxRetries: maxRetries,
   triggerMethod: triggerMethod,
   customSelectors: {
     email: data.emailFieldValue || '',
@@ -936,9 +921,21 @@ var scriptDataCollect = 'var DataCollector={'
 + 'processData:function(dat){if(!dat.email||typeof dat.email!=="string"||dat.email.trim()===""){debug("No email found or email is empty, cannot proceed");return null}if(CONFIG.enableValidation&&!Utils.isValidEmail(dat.email)){debug("Invalid email format:",dat.email);return null}if(CONFIG.normalizeData){dat.email=Utils.normalizeEmail(dat.email);if(!dat.email||dat.email.trim()===""){debug("Email became empty after normalization");return null}if(dat.phone){dat.phone=Utils.normalizePhone(dat.phone)}if(dat.firstName){dat.firstName=Utils.normalizeName(dat.firstName)}if(dat.lastName){dat.lastName=Utils.normalizeName(dat.lastName)}}var result={email:dat.email};if(dat.phone)result.phone_number=dat.phone;if(dat.firstName)result.first_name=dat.firstName;if(dat.lastName)result.last_name=dat.lastName;if(dat.address)result.address=dat.address;debug("Processed data:",result);return result}'
 + '};';
 
-// ConsentChecker module
+// ConsentChecker module - checks ad_storage consent via dataLayer
 var scriptConsent = 'var ConsentChecker={'
-+ 'hasConsent:function(){if(!CONFIG.checkConsent)return true;if(window.gtag){debug("GTM Consent Mode detected")}return true}'
++ 'hasConsent:function(){'
++ 'if(!CONFIG.checkConsent)return true;'
++ 'try{'
++ 'if(window.dataLayer){'
++ 'for(var i=window.dataLayer.length-1;i>=0;i--){'
++ 'var e=window.dataLayer[i];'
++ 'if(e&&e[0]==="consent"&&e[1]==="update"&&e[2]&&e[2].ad_storage==="denied"){'
++ 'debug("ad_storage consent denied, skipping data collection");return false'
++ '}'
++ '}'
++ '}'
++ '}catch(ex){debug("Error checking consent:",ex)}'
++ 'return true}'
 + '};';
 
 // DataLayerManager module - deduplication + dataLayer.push

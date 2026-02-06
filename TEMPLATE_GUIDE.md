@@ -489,7 +489,7 @@ SHA-256 hashing option will be added in future version for additional privacy.
 ### Reporting Issues
 
 Found a bug or platform that doesn't work? Open an issue on GitHub:
-- [GitHub Issues](https://github.com/gordonkgeraghty/GTM-Enhanced-Conversion-Template/issues)
+- [GitHub Issues](https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template/issues)
 
 ### Adding New Platforms
 
@@ -545,7 +545,7 @@ Apache License 2.0 - see [LICENSE](./LICENSE) file for details
 ## Credits
 
 Created by Gordon Geraghty
-- GitHub: [@gordonkgeraghty](https://github.com/gordonkgeraghty)
+- GitHub: [@gordongeraghty](https://github.com/gordongeraghty)
 
 ## FAQ
 
