@@ -237,7 +237,7 @@ Comprehensive test suite for all platform detections.
 
 **Purpose:** Automated testing of all platform detection methods
 **Features:**
-- Tests all 14 new platforms (8 marketing/booking + 6 existing platforms)
+- Tests all platform detection methods across 30+ platforms
 - Tests existing platform detection
 - Pass/fail reporting
 - Detailed logging

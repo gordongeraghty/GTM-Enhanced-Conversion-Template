@@ -51,7 +51,7 @@ Initial public release.
 ### Features
 
 **Platform detection**
-- Auto-detects 50+ platforms including Shopify, WooCommerce, Contact Form 7, Gravity Forms, HubSpot, and many others
+- Auto-detects 30+ platforms including Shopify, WooCommerce, Contact Form 7, Gravity Forms, HubSpot, and many others
 - Falls back to generic form handling when platform isn't recognized
 - Detection runs in order of popularity to find matches faster
 
@@ -103,5 +103,5 @@ Initial public release.
 - Contributing guidelines
 - Security policy
 
-[1.1.0]: https://github.com/Empire-Amplify/GTM-Enhanced-Conversion-Template/releases/tag/v1.1.0
-[1.0.0]: https://github.com/Empire-Amplify/GTM-Enhanced-Conversion-Template/releases/tag/v1.0.0
+[1.1.0]: https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template/releases/tag/v1.1.0
+[1.0.0]: https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Template/releases/tag/v1.0.0

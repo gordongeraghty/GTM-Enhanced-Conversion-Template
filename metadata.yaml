@@ -17,7 +17,7 @@ documentation: "https://github.com/gordongeraghty/GTM-Enhanced-Conversion-Templa
 versions:
   - sha: 1a1f08b41457d5b5284983e42ae76172dd0bb884
     changeNotes: |
-      v1.1.0 - Add 14 new platforms with test files
+      v1.1.0 - Add 8 new platforms with test files
       New Platforms:
       - Marketing Automation: Mailchimp, ActiveCampaign, Klaviyo
       - Booking: Calendly
@@ -34,7 +34,7 @@ versions:
     changeNotes: |
       Initial release v1.0.0
       - Universal Enhanced Conversion Tracking for Google Ads
-      - Auto-detection for 50+ platforms
+      - Auto-detection for 30+ platforms
       - Email validation and phone normalization
       - Debug mode for troubleshooting
       - GTM Consent Mode support

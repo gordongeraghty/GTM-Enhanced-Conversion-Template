@@ -2,14 +2,14 @@
 
 ## Overview
 
-This is a **single, unified Google Tag Manager Custom Template** that enables Enhanced Conversion Tracking for Google Ads across 50+ platforms including e-commerce systems, form builders, marketing automation platforms, and more.
+This is a **single, unified Google Tag Manager Custom Template** that enables Enhanced Conversion Tracking for Google Ads across 30+ platforms including e-commerce systems, form builders, marketing automation platforms, and more.
 
 Unlike traditional approaches that require separate implementations for each platform, this template uses intelligent auto-detection and platform-specific configurations to work universally.
 
 ## Key Features
 
 - **Auto-Detection**: Automatically identifies the platform and configures itself
-- **50+ Platform Support**: Works with Shopify, WooCommerce, Contact Form 7, Gravity Forms, HubSpot, and many more
+- **30+ Platform Support**: Works with Shopify, WooCommerce, Contact Form 7, Gravity Forms, HubSpot, and many more
 - **Zero External Dependencies**: No jQuery or other libraries required
 - **Built-in Validation**: Validates email format, normalizes phone numbers, etc.
 - **Consent Management**: Respects GTM Consent Mode and common consent platforms
@@ -530,7 +530,7 @@ myPlatform: {
 
 ### Version 1.0 (January 2026)
 - Initial release
-- Support for 50+ platforms
+- Support for 30+ platforms
 - Auto-detection engine
 - Universal field detector
 - Data validation and normalization
@@ -540,7 +540,7 @@ myPlatform: {
 
 ## License
 
-MIT License - see [LICENSE](./LICENSE) file for details
+Apache License 2.0 - see [LICENSE](./LICENSE) file for details
 
 ## Credits
 

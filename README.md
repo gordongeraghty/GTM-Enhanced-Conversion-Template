@@ -1,6 +1,6 @@
 # Google Ads Enhanced Conversion Tracking - GTM Template
 
-A Google Tag Manager template that handles Enhanced Conversion Tracking for Google Ads. Works with over 50 platforms out of the box - e-commerce sites, form plugins, marketing tools, and more.
+A Google Tag Manager template that handles Enhanced Conversion Tracking for Google Ads. Works with over 30 platforms out of the box - e-commerce sites, form plugins, marketing tools, and more.
 
 ## The problem this solves
 
@@ -138,7 +138,7 @@ Your Google Ads conversion tag reads this data automatically.
 ## Documentation
 
 - [Template Guide](./TEMPLATE_GUIDE.md) - Full setup and configuration
-- [Platform Support](./PLATFORM_SUPPORT.md) - All 50+ platforms with detection methods
+- [Platform Support](./PLATFORM_SUPPORT.md) - All 30+ platforms with detection methods
 - [Architecture](./ARCHITECTURE.md) - How the template works internally
 - [Test Files](./Test%20Files/) - HTML files for testing
 
@@ -163,7 +163,7 @@ Open an issue or submit a pull request. See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## License
 
-MIT - see [LICENSE](./LICENSE)
+Apache 2.0 - see [LICENSE](./LICENSE)
 
 ## Links
 

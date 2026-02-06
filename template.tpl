@@ -10,7 +10,7 @@ ___INFO___
 
 {
   "displayName": "Enhanced Conversion Tracking - Universal",
-  "description": "Universal Enhanced Conversion Tracking for Google Ads across 50+ platforms including e-commerce (Shopify, WooCommerce, Square), forms (Contact Form 7, Gravity Forms, Typeform), marketing automation (HubSpot, Mailchimp, Klaviyo, ActiveCampaign), booking (Calendly), surveys (SurveyMonkey), donations (Donorbox), and restaurants (Toast). Auto-detects platforms and captures user data for enhanced conversions.",
+  "description": "Universal Enhanced Conversion Tracking for Google Ads across 30+ platforms including e-commerce (Shopify, WooCommerce, Square), forms (Contact Form 7, Gravity Forms, Typeform), marketing automation (HubSpot, Mailchimp, Klaviyo, ActiveCampaign), booking (Calendly), surveys (SurveyMonkey), donations (Donorbox), and restaurants (Toast). Auto-detects platforms and captures user data for enhanced conversions.",
   "securityGroups": [],
   "id": "cvt_temp_public_id",
   "categories": [

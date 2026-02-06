@@ -442,7 +442,7 @@ GTM-Enhanced-Conversion-Template/
 ├── CONTRIBUTING.md           # How to contribute
 ├── SECURITY.md               # Security info
 ├── CODE_OF_CONDUCT.md        # Community guidelines
-├── LICENSE                   # MIT license
+├── LICENSE                   # Apache 2.0 license
 ├── TEMPLATE_GUIDE.md         # Detailed configuration
 ├── PLATFORM_SUPPORT.md       # All platforms with selectors
 ├── .github/
